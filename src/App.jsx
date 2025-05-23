@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Tabs from "./components/Tabs";
+import Today from "./pages/Today";
 
 function App() {
   return (
@@ -7,6 +8,7 @@ function App() {
       <div className="min-h-screen  max-w-4xl mx-auto">
         <Header />
         <Tabs />
+        <Today />
       </div>
     </div>
   );

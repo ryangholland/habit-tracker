@@ -5,21 +5,21 @@ function Tabs() {
     <TabGroup className="p-4">
       <TabList className="flex border-b border-gray-700 text-2xl gap-8">
         <Tab
-          className="text-gray-400 border-b-2 border-transparent 
+          className="text-gray-400 border-b-2 border-transparent pb-2 
         hover:text-white hover:border-white 
         data-selected:text-white data-selected:border-white"
         >
           Today
         </Tab>
         <Tab
-          className="text-gray-400 border-b-2 border-transparent 
+          className="text-gray-400 border-b-2 border-transparent pb-2
         hover:text-white hover:border-white
         data-selected:text-white data-selected:border-white"
         >
           This Week
         </Tab>
         <Tab
-          className="text-gray-400 border-b-2 border-transparent 
+          className="text-gray-400 border-b-2 border-transparent pb-2
         hover:text-white hover:border-white
         data-selected:text-white data-selected:border-white"
         >
