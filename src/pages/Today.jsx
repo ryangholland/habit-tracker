@@ -1,5 +1,6 @@
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
+import ProgressBar from "../components/ProgressBar";
 
 function Today() {
   return (
@@ -10,7 +11,7 @@ function Today() {
       </p>
       <HabitList />
       <AddHabitForm />
-      <p>ProgressBar</p>
+      <ProgressBar progress={50} />
     </div>
   );
 }
