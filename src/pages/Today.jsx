@@ -1,4 +1,5 @@
 import HabitList from "../components/HabitList";
+import AddHabitForm from "../components/AddHabitForm";
 
 function Today() {
   return (
@@ -8,7 +9,7 @@ function Today() {
         The journey of a thousand miles begins with a single step.
       </p>
       <HabitList />
-      <p>AddHabitForm</p>
+      <AddHabitForm />
       <p>ProgressBar</p>
     </div>
   );
