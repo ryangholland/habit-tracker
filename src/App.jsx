@@ -1,19 +1,33 @@
-import Header from "./components/Header";
-import Tabs from "./components/Tabs";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
 import Today from "./pages/Today";
-import Footer from "./components/Footer";
+import Stats from "./pages/Stats";
+import ThisWeek from "./pages/ThisWeek";
+import Layout from "./layouts/Layout";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Today />,
+      },
+      {
+        path: "/this-week",
+        element: <ThisWeek />,
+      },
+      {
+        path: "/stats",
+        element: <Stats />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <div className="bg-gray-900 text-white min-h-screen flex flex-col">
-      <div className="flex-grow container max-w-4xl mx-auto p-4 md:p-6 ">
-        <Header />
-        <Tabs />
-        <Today />
-      </div>
-      <Footer />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
