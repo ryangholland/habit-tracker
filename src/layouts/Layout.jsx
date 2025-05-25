@@ -9,7 +9,9 @@ const Layout = () => {
       <div className="flex-grow container max-w-4xl mx-auto p-4 md:p-6">
         <Header />
         <Tabs />
-        <Outlet />
+        <main className="bg-gray-800 rounded-xl p-4 mt-2 mx-4 md:p-6 flex flex-col gap-2">
+          <Outlet />
+        </main>
       </div>
       <Footer />
     </div>
