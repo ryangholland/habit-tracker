@@ -9,7 +9,7 @@ function Today({ habits, setHabits }) {
       <p className="italic">
         The journey of a thousand miles begins with a single step.
       </p>
-      <HabitList habits={habits} />
+      <HabitList habits={habits} setHabits={setHabits} />
       <AddHabitForm habits={habits} setHabits={setHabits} />
       <ProgressBar progress={50} />
     </>

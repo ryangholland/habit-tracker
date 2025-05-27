@@ -12,7 +12,7 @@ function App() {
     {
       id: 1,
       name: "Read 10 pages",
-      completedToday: true,
+      completedToday: false,
       history: {
         "2025-05-26": true,
         "2025-05-25": false,
@@ -21,7 +21,7 @@ function App() {
     {
       id: 2,
       name: "Work out",
-      completedToday: true,
+      completedToday: false,
       history: {
         "2025-05-26": true,
         "2025-05-25": false,

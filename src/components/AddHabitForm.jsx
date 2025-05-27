@@ -6,7 +6,7 @@ function AddHabitForm({ habits, setHabits }) {
 
   function addHabit(name) {
     if (!name.trim()) return;
-    const newHabit = { id: crypto.randomUUID(), name, completed: false };
+    const newHabit = { id: crypto.randomUUID(), name, completedToday: false };
     setHabits([...habits, newHabit]);
     setInputValue("");
   }

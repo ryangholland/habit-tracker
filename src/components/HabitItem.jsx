@@ -1,14 +1,20 @@
 import { Checkbox } from "@headlessui/react";
 import { useState } from "react";
 
-function HabitItem({ habitName }) {
-  const [enabled, setEnabled] = useState(false);
+function HabitItem({ habitId, habitName, habitCompleted, toggleHabitStatus }) {
+  const [enabled, setEnabled] = useState(habitCompleted);
+
+  // Change habitCompleted state when checkbox is toggled
+  function handleCheckboxChange() {
+    toggleHabitStatus(habitId);
+    setEnabled(!enabled);
+  }
 
   return (
     <div className="flex items-center space-x-2 gap-2">
       <Checkbox
         checked={enabled}
-        onChange={setEnabled}
+        onChange={handleCheckboxChange}
         className={`group block size-6  rounded border border-gray-400 bg-gray-800 
           data-checked:bg-gray-400 focus:outline-none`}
       >
@@ -27,7 +33,9 @@ function HabitItem({ habitName }) {
         </svg>
       </Checkbox>
       <span
-        className={`text-lg ${enabled ? "line-through text-gray-400" : "text-white"}`}
+        className={`text-lg ${
+          enabled ? "line-through text-gray-400" : "text-white"
+        }`}
       >
         {habitName}
       </span>
