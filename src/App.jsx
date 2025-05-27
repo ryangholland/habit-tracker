@@ -8,11 +8,9 @@ import ThisWeek from "./pages/ThisWeek";
 import Layout from "./layouts/Layout";
 
 function App() {
-  // const [habits, setHabits] = useLocalStorage("habits", []);
-
-  const habits = [
+  const [habits, setHabits] = useLocalStorage("habits", [
     {
-      id: "uuid",
+      id: 1,
       name: "Read 10 pages",
       completedToday: true,
       history: {
@@ -21,7 +19,7 @@ function App() {
       },
     },
     {
-      id: "uuid2",
+      id: 2,
       name: "Work out",
       completedToday: true,
       history: {
@@ -29,7 +27,8 @@ function App() {
         "2025-05-25": false,
       },
     },
-  ];
+  ]);
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -37,7 +36,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Today habits={habits} />,
+          element: <Today habits={habits} setHabits={setHabits} />,
         },
         {
           path: "/this-week",

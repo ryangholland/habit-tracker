@@ -1,13 +1,33 @@
+import { useState } from "react";
 import { Input } from "@headlessui/react";
 
-function AddHabitForm() {
+function AddHabitForm({ habits, setHabits }) {
+  const [inputValue, setInputValue] = useState("");
+
+  function addHabit(name) {
+    if (!name.trim()) return;
+    const newHabit = { id: crypto.randomUUID(), name, completed: false };
+    setHabits([...habits, newHabit]);
+    setInputValue("");
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    addHabit(inputValue);
+  }
+
   return (
-    <form className="flex bg-gray-800 rounded-md shadow-md">
+    <form
+      className="flex bg-gray-800 rounded-md shadow-md"
+      onSubmit={handleSubmit}
+    >
       <Input
         name="habit_name"
         type="text"
         placeholder="Add a habit"
         className="w-full px-4 py-2 text-white bg-gray-900 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
     </form>
   );
