@@ -9,7 +9,6 @@ function HabitList({ habits, setHabits }) {
           : habit
       )
     );
-    console.log(`Habit ${id} status toggled`);
   };
 
   return (

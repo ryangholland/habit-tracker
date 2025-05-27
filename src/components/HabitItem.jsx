@@ -4,7 +4,6 @@ import { useState } from "react";
 function HabitItem({ habitId, habitName, habitCompleted, toggleHabitStatus }) {
   const [enabled, setEnabled] = useState(habitCompleted);
 
-  // Change habitCompleted state when checkbox is toggled
   function handleCheckboxChange() {
     toggleHabitStatus(habitId);
     setEnabled(!enabled);
