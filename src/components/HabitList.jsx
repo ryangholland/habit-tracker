@@ -1,11 +1,11 @@
 import HabitItem from "./HabitItem";
 
-function HabitList() {
+function HabitList({ habits }) {
   return (
     <div className="py-4 flex flex-col gap-4">
-      <HabitItem habitName="Drink Water" />
-      <HabitItem habitName="Drink Water" />
-      <HabitItem habitName="Drink Water" />
+      {habits.map((habit) => (
+        <HabitItem key={habit.id} habitName={habit.name} />
+      ))}
     </div>
   );
 }

@@ -8,7 +8,9 @@ import ThisWeek from "./pages/ThisWeek";
 import Layout from "./layouts/Layout";
 
 function App() {
-  const [habits, setHabits] = useLocalStorage("habits", [
+  // const [habits, setHabits] = useLocalStorage("habits", []);
+
+  const habits = [
     {
       id: "uuid",
       name: "Read 10 pages",
@@ -27,8 +29,7 @@ function App() {
         "2025-05-25": false,
       },
     },
-  ]);
-
+  ];
   const router = createBrowserRouter([
     {
       path: "/",
@@ -36,7 +37,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Today habits={habits} setHabits={setHabits} />,
+          element: <Today habits={habits} />,
         },
         {
           path: "/this-week",
