@@ -10,7 +10,13 @@ function Today({ habits, setHabits }) {
 
   return (
     <>
-      <h2 className="text-lg">May 23, 2025</h2>
+      <h2 className="text-lg">
+        {new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </h2>
       <p className="italic">
         The journey of a thousand miles begins with a single step.
       </p>
