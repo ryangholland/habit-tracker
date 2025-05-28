@@ -1,11 +1,12 @@
 import { Checkbox } from "@headlessui/react";
 import { useState } from "react";
 
-function HabitItem({ habitId, habitName, habitCompleted, toggleHabitStatus }) {
-  const [enabled, setEnabled] = useState(habitCompleted);
+function HabitItem({ habit, toggleHabitStatus }) {
+  const { id, name, completedToday } = habit
+  const [enabled, setEnabled] = useState(completedToday);
 
   function handleCheckboxChange() {
-    toggleHabitStatus(habitId);
+    toggleHabitStatus(id);
     setEnabled(!enabled);
   }
 
@@ -36,7 +37,7 @@ function HabitItem({ habitId, habitName, habitCompleted, toggleHabitStatus }) {
           enabled ? "line-through text-gray-400" : "text-white"
         }`}
       >
-        {habitName}
+        {name}
       </span>
     </div>
   );

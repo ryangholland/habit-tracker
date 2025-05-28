@@ -16,9 +16,7 @@ function HabitList({ habits, setHabits }) {
       {habits.map((habit) => (
         <HabitItem
           key={habit.id}
-          habitId={habit.id}
-          habitName={habit.name}
-          habitCompleted={habit.completedToday}
+          habit={habit}
           toggleHabitStatus={toggleHabitStatus}
         />
       ))}
