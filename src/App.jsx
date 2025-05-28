@@ -1,34 +1,11 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { useLocalStorage } from "./hooks/useLocalStorage";
-
 import Today from "./pages/Today";
 import Stats from "./pages/Stats";
 import ThisWeek from "./pages/ThisWeek";
 import Layout from "./layouts/Layout";
 
 function App() {
-  const [habits, setHabits] = useLocalStorage("habits", [
-    {
-      id: 1,
-      name: "Read 10 pages",
-      completedToday: false,
-      history: {
-        "2025-05-26": true,
-        "2025-05-25": false,
-      },
-    },
-    {
-      id: 2,
-      name: "Work out",
-      completedToday: false,
-      history: {
-        "2025-05-26": true,
-        "2025-05-25": false,
-      },
-    },
-  ]);
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -36,15 +13,15 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Today habits={habits} setHabits={setHabits} />,
+          element: <Today />,
         },
         {
           path: "/this-week",
-          element: <ThisWeek habits={habits} />,
+          element: <ThisWeek />,
         },
         {
           path: "/stats",
-          element: <Stats habits={habits} />,
+          element: <Stats />,
         },
       ],
     },

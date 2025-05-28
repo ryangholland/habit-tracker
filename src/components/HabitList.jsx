@@ -1,7 +1,11 @@
-import HabitItem from "./HabitItem";
+import { useHabits } from "../hooks/useHabits";
 import { toggleHabit } from "../utils/habitUtils";
 
-function HabitList({ habits, setHabits }) {
+import HabitItem from "./HabitItem";
+
+function HabitList() {
+  const { habits, setHabits } = useHabits();
+
   const toggleHabitStatus = (id) => {
     setHabits((prevHabits) => toggleHabit(prevHabits, id));
   };

@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useHabits } from "../hooks/useHabits";
+
 import { Input } from "@headlessui/react";
 
-function AddHabitForm({ habits, setHabits }) {
+function AddHabitForm() {
+  const { habits, setHabits } = useHabits();
   const [inputValue, setInputValue] = useState("");
 
   function addHabit(name) {

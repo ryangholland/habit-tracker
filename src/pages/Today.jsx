@@ -1,8 +1,12 @@
+import { useHabits } from "../hooks/useHabits";
+
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
 
-function Today({ habits, setHabits }) {
+function Today() {
+  const { habits, setHabits } = useHabits();
+
   const completedHabits = habits.filter((habit) => habit.completedToday).length;
   const totalHabits = habits.length;
   const progress =
