@@ -1,42 +1,50 @@
-import { Tab, TabGroup, TabList } from "@headlessui/react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Tabs() {
-  const location = useLocation();
+  const baseClasses =
+    "pb-2 border-b-2 text-2xl hover:text-white hover:border-white";
 
   return (
-    <TabGroup className="p-4">
-      <TabList className="flex border-b border-gray-700 text-2xl gap-8">
-        <Link to="/">
-          <Tab
-            className={`text-gray-400 border-b-2 border-transparent pb-2 
-        hover:text-white hover:border-white
- 
-        ${location.pathname === "/" ? "text-white border-white" : ""}`}
-          >
-            Today
-          </Tab>
-        </Link>
-        <Link to="/this-week">
-          <Tab
-            className={`text-gray-400 border-b-2 border-transparent pb-2
-        hover:text-white hover:border-white
-        ${location.pathname === "/this-week" ? "text-white border-white" : ""}`}
-          >
-            This Week
-          </Tab>
-        </Link>
-        <Link to="/stats">
-          <Tab
-            className={`text-gray-400 border-b-2 border-transparent pb-2
-        hover:text-white hover:border-white
-        ${location.pathname === "/stats" ? "text-white border-white" : ""}`}
-          >
-            Stats
-          </Tab>
-        </Link>
-      </TabList>
-    </TabGroup>
+    <div className="p-4">
+      <div className="flex border-b border-gray-700 gap-8">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `${baseClasses} ${
+              isActive
+                ? "text-white border-white"
+                : "text-gray-400 border-transparent"
+            }`
+          }
+        >
+          Today
+        </NavLink>
+        <NavLink
+          to="/this-week"
+          className={({ isActive }) =>
+            `${baseClasses} ${
+              isActive
+                ? "text-white border-white"
+                : "text-gray-400 border-transparent"
+            }`
+          }
+        >
+          This Week
+        </NavLink>
+        <NavLink
+          to="/stats"
+          className={({ isActive }) =>
+            `${baseClasses} ${
+              isActive
+                ? "text-white border-white"
+                : "text-gray-400 border-transparent"
+            }`
+          }
+        >
+          Stats
+        </NavLink>
+      </div>
+    </div>
   );
 }
 
