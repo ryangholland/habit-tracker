@@ -1,14 +1,9 @@
 import HabitItem from "./HabitItem";
+import { toggleHabit } from "../utils/habitUtils";
 
 function HabitList({ habits, setHabits }) {
   const toggleHabitStatus = (id) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((habit) =>
-        habit.id === id
-          ? { ...habit, completedToday: !habit.completedToday }
-          : habit
-      )
-    );
+    setHabits((prevHabits) => toggleHabit(prevHabits, id));
   };
 
   return (
