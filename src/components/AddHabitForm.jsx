@@ -1,15 +1,24 @@
 import { useState } from "react";
 import { useHabits } from "../hooks/useHabits";
+import { useToday } from "../hooks/useToday";
 
 import { Input } from "@headlessui/react";
 
 function AddHabitForm() {
   const { habits, setHabits } = useHabits();
+  const { isoDate } = useToday();
   const [inputValue, setInputValue] = useState("");
 
   function addHabit(name) {
     if (!name.trim()) return;
-    const newHabit = { id: crypto.randomUUID(), name, completedToday: false };
+    const newHabit = {
+      id: crypto.randomUUID(),
+      name,
+      completedToday: false,
+      history: {
+        [isoDate]: false,
+      },
+    };
     setHabits([...habits, newHabit]);
     setInputValue("");
   }
