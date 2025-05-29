@@ -9,5 +9,16 @@ export function toggleHabit(habits, id, isoDate) {
       return { ...habit, completedToday, history };
     }
     return habit;
-  })
+  });
+}
+
+export function createNewHabit(name, isoDate) {
+  return {
+    id: crypto.randomUUID(),
+    name,
+    completedToday: false,
+    history: {
+      [isoDate]: false,
+    },
+  };
 }

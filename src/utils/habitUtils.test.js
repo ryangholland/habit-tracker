@@ -1,4 +1,4 @@
-import { toggleHabit } from "./habitUtils";
+import { toggleHabit, createNewHabit } from "./habitUtils";
 
 test("toggles completedToday and updates history for the correct habit", () => {
   const habits = [
@@ -24,4 +24,16 @@ test("toggles completedToday and updates history for the correct habit", () => {
 
   // Make sure other habits were untouched
   expect(updated[1]).toEqual(habits[1]);
+});
+
+test("createNewHabit returns a valid habit object", () => {
+  const isoDate = "2025-05-29";
+  const name = "Stretch";
+
+  const habit = createNewHabit(name, isoDate);
+
+  expect(habit).toHaveProperty("id");
+  expect(habit.name).toBe(name);
+  expect(habit.completedToday).toBe(false);
+  expect(habit.history).toEqual({ [isoDate]: false });
 });
