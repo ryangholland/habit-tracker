@@ -1,8 +1,4 @@
-import { useToday } from "../hooks/useToday";
-
-export function toggleHabit(habits, id) {
-  const { isoDate } = useToday();
-
+export function toggleHabit(habits, id, isoDate) {
   return habits.map((habit) => {
     if (habit.id === id) {
       const completedToday = !habit.completedToday;
