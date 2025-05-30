@@ -4,7 +4,9 @@ function HabitItem({ habit, toggleHabitStatus }) {
   const { id, name, completedToday } = habit;
 
   return (
-    <div className="flex items-center space-x-2 gap-2">
+    <div className="flex items-center space-x-2 gap-2
+    p-2 rounded-lg border border-gray-700 bg-gray-800 
+        hover:bg-gray-700 hover:border-gray-500 hover:cursor-pointer transition duration-200">
       <Checkbox
         checked={completedToday}
         onChange={() => toggleHabitStatus(id)}
