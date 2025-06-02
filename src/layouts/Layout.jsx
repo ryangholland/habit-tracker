@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Tabs from "../components/Tabs";
 import Footer from "../components/Footer";
+import DeleteHabitDialog from "../components/DeleteHabitDialog";
 
 const Layout = () => {
   return (
@@ -14,6 +15,7 @@ const Layout = () => {
         </main>
       </div>
       <Footer />
+      <DeleteHabitDialog />
     </div>
   );
 };

@@ -1,9 +1,11 @@
 import { Checkbox } from "@headlessui/react";
 import { FaCog, FaTrash } from "react-icons/fa";
 import IconButton from "./IconButton";
+import { useDeleteDialog } from "../hooks/useDeleteDialog";
 
 function HabitItem({ habit, toggleHabitStatus }) {
   const { id, name, completedToday } = habit;
+  const { openDeleteDialog } = useDeleteDialog();
 
   const handleItemClick = (e) => {
     if (e.target.closest(".icon-container")) return;
@@ -30,7 +32,7 @@ function HabitItem({ habit, toggleHabitStatus }) {
         <Checkbox
           checked={completedToday}
           aria-checked={completedToday}
-          tabIndex={-1} 
+          tabIndex={-1}
           title={completedToday ? "Mark as incomplete" : "Mark as complete"}
           className="group block size-6 rounded border border-gray-400 bg-gray-800 
             data-checked:bg-gray-400 focus:outline-none hover:cursor-pointer 
@@ -68,6 +70,7 @@ function HabitItem({ habit, toggleHabitStatus }) {
           label="Delete Habit"
           icon={FaTrash}
           className="hover:text-red-400"
+          onClick={() => openDeleteDialog(habit)}
         />
       </div>
     </div>
