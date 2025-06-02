@@ -1,5 +1,10 @@
 import { Fragment } from "react";
-import { Dialog, Transition, DialogPanel, DialogTitle } from "@headlessui/react";
+import {
+  Dialog,
+  Transition,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 import { useDeleteDialog } from "../hooks/useDeleteDialog";
 import { useHabits } from "../hooks/useHabits";
 
@@ -15,7 +20,12 @@ function DeleteHabitDialog() {
   };
 
   return (
-    <Dialog as="div" className="relative z-50" open={isOpen} onClose={closeDialog}>
+    <Dialog
+      as="div"
+      className="relative z-50"
+      open={isOpen}
+      onClose={closeDialog}
+    >
       {/* Backdrop */}
       <Transition
         show={isOpen}
@@ -27,7 +37,10 @@ function DeleteHabitDialog() {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+          aria-hidden="true"
+        />
       </Transition>
 
       {/* Dialog panel wrapper */}
@@ -57,14 +70,14 @@ function DeleteHabitDialog() {
             <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
-                className="px-4 py-2 text-sm rounded-md bg-gray-600 hover:bg-gray-500 text-white"
+                className="cursor-pointer px-4 py-2 text-sm rounded-md bg-gray-600 hover:bg-gray-500 text-white"
                 onClick={closeDialog}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="px-4 py-2 text-sm rounded-md bg-red-600 hover:bg-red-500 text-white"
+                className="cursor-pointer px-4 py-2 text-sm rounded-md bg-red-600 hover:bg-red-500 text-white ring-1 ring-red-400"
                 onClick={handleConfirm}
               >
                 Delete
