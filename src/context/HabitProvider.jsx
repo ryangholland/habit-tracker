@@ -26,6 +26,7 @@ export function HabitProvider({ children }) {
     },
   ]);
 
+  // Ensure today's entry is always present
   const updatedHabits = habits.map((habit) => {
     const hasToday = habit.history?.hasOwnProperty(isoDate);
     if (!hasToday) {
@@ -44,8 +45,15 @@ export function HabitProvider({ children }) {
     };
   });
 
+  // Delete logic exposed via context
+  function deleteHabit(id) {
+    setHabits((prevHabits) => prevHabits.filter((habit) => habit.id !== id));
+  }
+
   return (
-    <HabitContext.Provider value={{ habits: updatedHabits, setHabits }}>
+    <HabitContext.Provider
+      value={{ habits: updatedHabits, setHabits, deleteHabit }}
+    >
       {children}
     </HabitContext.Provider>
   );
