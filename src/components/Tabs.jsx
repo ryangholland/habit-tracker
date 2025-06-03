@@ -19,18 +19,7 @@ function Tabs() {
         >
           Today
         </NavLink>
-        <NavLink
-          to="/this-week"
-          className={({ isActive }) =>
-            `${baseClasses} ${
-              isActive
-                ? "text-white border-white"
-                : "text-gray-400 border-transparent"
-            }`
-          }
-        >
-          This Week
-        </NavLink>
+        
         <NavLink
           to="/stats"
           className={({ isActive }) =>
@@ -42,6 +31,19 @@ function Tabs() {
           }
         >
           Stats
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `${baseClasses} ${
+              isActive
+                ? "text-white border-white"
+                : "text-gray-400 border-transparent"
+            }`
+          }
+        >
+          Settings
         </NavLink>
       </div>
     </div>

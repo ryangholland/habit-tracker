@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Today from "./pages/Today";
 import Stats from "./pages/Stats";
-import ThisWeek from "./pages/ThisWeek";
+import Settings from "./pages/Settings";
 import Layout from "./layouts/Layout";
 
 function App() {
@@ -16,12 +16,12 @@ function App() {
           element: <Today />,
         },
         {
-          path: "/this-week",
-          element: <ThisWeek />,
-        },
-        {
           path: "/stats",
           element: <Stats />,
+        },
+        {
+          path: "/settings",
+          element: <Settings />,
         },
       ],
     },
