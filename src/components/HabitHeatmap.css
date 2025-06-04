@@ -1,0 +1,26 @@
+.color-empty {
+    fill: #1f2937; /* Tailwind gray-800 */
+  }
+  .color-scale-0 {
+    fill: #374151; /* Tailwind gray-700 */
+  }
+  .color-scale-1 {
+    fill: #2563eb33; /* blue-600 low opacity */
+  }
+  .color-scale-2 {
+    fill: #2563eb66;
+  }
+  .color-scale-3 {
+    fill: #2563ebaa;
+  }
+  .color-scale-4 {
+    fill: #2563eb;
+  }
+  .react-calendar-heatmap text {
+    fill: #d1d5db; /* Tailwind gray-300 for labels */
+  }
+  
+  .react-calendar-heatmap {
+    transform: scale(0.75);
+    transform-origin: top;
+  }
