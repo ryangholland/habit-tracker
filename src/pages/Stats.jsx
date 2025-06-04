@@ -1,8 +1,11 @@
+import HabitHeatmap from "../components/HabitHeatmap";
+
 function Stats() {
   return (
     <>
-      <h1>Stats</h1>
-      <p>Statistics will be displayed here.</p>
+      <h2 className="text-2xl">Stats</h2>
+      
+      <HabitHeatmap />
     </>
   );
 }

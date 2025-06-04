@@ -13,7 +13,7 @@ function Today() {
 
   return (
     <>
-      <h2 className="text-lg">{formatted}</h2>
+      <h2 className="text-2xl">{formatted}</h2>
       <p className="italic">
         The journey of a thousand miles begins with a single step.
       </p>
