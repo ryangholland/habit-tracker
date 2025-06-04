@@ -1,11 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import Today from "./Today";
 import { HabitProvider } from "../context/HabitProvider";
+import { DeleteDialogProvider } from "../context/DeleteDialogProvider";
 
 test("renders habits, form, and progress bar", () => {
   render(
     <HabitProvider>
-      <Today />
+      <DeleteDialogProvider>
+        <Today />
+      </DeleteDialogProvider>
     </HabitProvider>
   );
 
