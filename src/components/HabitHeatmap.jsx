@@ -1,8 +1,10 @@
 import { useHabits } from "../hooks/useHabits";
 import CalendarHeatmap from "react-calendar-heatmap";
-import { subDays } from "date-fns";
+import { Tooltip } from "react-tooltip";
+import { subDays, format } from "date-fns";
 import "react-calendar-heatmap/dist/styles.css";
-import '../components/HabitHeatmap.css'
+import "react-tooltip/dist/react-tooltip.css";
+import "../components/HabitHeatmap.css";
 
 // function generateDummyHeatmapData(days = 120) {
 //   const today = new Date();
@@ -74,12 +76,20 @@ export default function HabitHeatmap({ data }) {
         tooltipDataAttrs={(value) =>
           value && value.date
             ? {
-                "data-tip": `${value.date}: ${value.completed} of ${value.total} habits`,
+                "data-tooltip-id": "heatmap-tooltip",
+                "data-tooltip-content": `${format(
+                  new Date(value.date),
+                  "EEE, MMMM d"
+                )}: ${Math.round(value.count * 100)}% completed`,
               }
-            : { "data-tip": "No data" }
+            : {
+                "data-tooltip-id": "heatmap-tooltip",
+                "data-tooltip-content": "No data",
+              }
         }
         showWeekdayLabels={false}
       />
+      <Tooltip id="heatmap-tooltip" />
     </div>
   );
 }
