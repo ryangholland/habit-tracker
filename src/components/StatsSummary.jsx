@@ -25,6 +25,17 @@ export default function StatsSummary() {
       ? (totalCompletions / Object.keys(completionData).length).toFixed(1)
       : 0;
 
+  let mostCompletedHabit = "";
+  let maxCompletions = 0;
+
+  habits.forEach((habit) => {
+    const count = Object.values(habit.history || {}).filter(Boolean).length;
+    if (count > maxCompletions) {
+      maxCompletions = count;
+      mostCompletedHabit = habit.name;
+    }
+  });
+
   // TEMP: placeholder values while we build the real logic
   const stats = {
     mostCompletedHabit: "Drink Water",
@@ -38,7 +49,7 @@ export default function StatsSummary() {
     <div className=" p-4 rounded-lg border border-gray-700 bg-gray-900 text-white space-y-3 text-sm sm:text-base max-w-2xl mx-auto">
       <div>
         <span className="font-semibold">Most Completed Habit:</span>{" "}
-        {stats.mostCompletedHabit}
+        {mostCompletedHabit} ({maxCompletions} completions)
       </div>
       <div>
         <span className="font-semibold">Longest Streak:</span>{" "}
