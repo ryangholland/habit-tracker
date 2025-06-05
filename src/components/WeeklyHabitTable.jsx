@@ -37,7 +37,9 @@ export default function WeeklyHabitTable() {
         <tbody>
           {habits.map((habit) => (
             <tr key={habit.id}>
-              <td className="p-2 border border-gray-700">{habit.name}</td>
+              <td className="p-2 border border-gray-700 max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap">
+                {habit.name}
+              </td>
               {days.map((day) => (
                 <td
                   key={day.iso}
