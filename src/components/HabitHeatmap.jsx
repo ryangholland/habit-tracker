@@ -67,7 +67,7 @@ export default function HabitHeatmap({ data }) {
   const heatmapData = transformHabitsToHeatmap(habits);
 
   return (
-    <div className="overflow-x-auto pb-4 mt-2 md:mt-4">
+    <div className="overflow-x-auto  mt-2 md:mt-4">
       <CalendarHeatmap
         startDate={subDays(new Date(), 120)}
         endDate={new Date()}
