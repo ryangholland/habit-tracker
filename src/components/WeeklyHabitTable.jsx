@@ -1,6 +1,8 @@
 import { useHabits } from "../hooks/useHabits";
 import { format, subDays } from "date-fns";
 import { FaCheck } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 function getLast7Days() {
   const days = [];
@@ -37,7 +39,11 @@ export default function WeeklyHabitTable() {
         <tbody>
           {habits.map((habit) => (
             <tr key={habit.id}>
-              <td className="p-2 border border-gray-700 max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap">
+              <td
+                className="p-2 border border-gray-700 max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap"
+                data-tooltip-id="habit-name-tooltip"
+                data-tooltip-content={habit.name}
+              >
                 {habit.name}
               </td>
               {days.map((day) => (
@@ -56,6 +62,7 @@ export default function WeeklyHabitTable() {
           ))}
         </tbody>
       </table>
+      <Tooltip id="habit-name-tooltip" place="top" />
     </div>
   );
 }
