@@ -40,7 +40,7 @@ export default function WeeklyHabitTable() {
           {habits.map((habit) => (
             <tr key={habit.id}>
               <td
-                className="p-2 border border-gray-700 max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap"
+                className="p-2 border border-gray-700 max-w-[70px] overflow-hidden text-ellipsis whitespace-nowrap"
                 data-tooltip-id="habit-name-tooltip"
                 data-tooltip-content={habit.name}
               >
