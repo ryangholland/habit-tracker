@@ -1,4 +1,40 @@
 import { useHabits } from "../hooks/useHabits";
+import { parseISO, isBefore, isEqual, subDays, formatISO } from "date-fns";
+
+function calculateStreak(history, upToDate = new Date()) {
+  const dates = Object.keys(history).sort();
+  let longest = 0;
+  let current = 0;
+  let prev = null;
+
+  dates.forEach((dateStr) => {
+    const completed = history[dateStr];
+    if (!completed) {
+      current = 0;
+      return;
+    }
+
+    const date = parseISO(dateStr);
+
+    if (
+      prev &&
+      isEqual(date, subDays(prev, -1)) // current = previous + 1 day
+    ) {
+      current += 1;
+    } else {
+      current = 1;
+    }
+
+    if (current > longest) longest = current;
+    prev = date;
+  });
+
+  // Check if current streak is still going today
+  const todayISO = formatISO(upToDate, { representation: "date" });
+  const active = history[todayISO] ? current : 0;
+
+  return { longest, active };
+}
 
 export default function StatsSummary() {
   const { habits } = useHabits();
@@ -36,6 +72,15 @@ export default function StatsSummary() {
     }
   });
 
+  let longestStreak = 0;
+  let longestActiveStreak = 0;
+
+  habits.forEach((habit) => {
+    const { longest, active } = calculateStreak(habit.history || {});
+    if (longest > longestStreak) longestStreak = longest;
+    if (active > longestActiveStreak) longestActiveStreak = active;
+  });
+
   // TEMP: placeholder values while we build the real logic
   const stats = {
     mostCompletedHabit: "Drink Water",
@@ -53,11 +98,11 @@ export default function StatsSummary() {
       </div>
       <div>
         <span className="font-semibold">Longest Streak:</span>{" "}
-        {stats.longestStreak} days
+        {longestStreak} days
       </div>
       <div>
         <span className="font-semibold">Longest Active Streak:</span>{" "}
-        {stats.longestActiveStreak} days
+        {longestActiveStreak} days
       </div>
       <div>
         <span className="font-semibold">Average Daily Completion Rate:</span>{" "}
