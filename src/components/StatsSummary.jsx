@@ -3,6 +3,28 @@ import { useHabits } from "../hooks/useHabits";
 export default function StatsSummary() {
   const { habits } = useHabits();
 
+  const completionData = {};
+
+  habits.forEach((habit) => {
+    Object.entries(habit.history || {}).forEach(([date, completed]) => {
+      if (!completionData[date]) {
+        completionData[date] = 0;
+      }
+      if (completed) {
+        completionData[date] += 1;
+      }
+    });
+  });
+
+  const totalCompletions = Object.values(completionData).reduce(
+    (sum, val) => sum + val,
+    0
+  );
+  const averagePerDay =
+    completionData && Object.keys(completionData).length > 0
+      ? (totalCompletions / Object.keys(completionData).length).toFixed(1)
+      : 0;
+
   // TEMP: placeholder values while we build the real logic
   const stats = {
     mostCompletedHabit: "Drink Water",
@@ -28,11 +50,11 @@ export default function StatsSummary() {
       </div>
       <div>
         <span className="font-semibold">Average Daily Completion Rate:</span>{" "}
-        {stats.averagePerDay} habits/day
+        {averagePerDay} habits/day
       </div>
       <div>
         <span className="font-semibold">Total Habit Completions:</span>{" "}
-        {stats.totalCompletions}
+        {totalCompletions}
       </div>
     </div>
   );
