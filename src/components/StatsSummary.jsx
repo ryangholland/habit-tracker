@@ -73,12 +73,20 @@ export default function StatsSummary() {
   });
 
   let longestStreak = 0;
+  let longestStreakHabit = "";
   let longestActiveStreak = 0;
+  let longestActiveHabit = "";
 
   habits.forEach((habit) => {
     const { longest, active } = calculateStreak(habit.history || {});
-    if (longest > longestStreak) longestStreak = longest;
-    if (active > longestActiveStreak) longestActiveStreak = active;
+    if (longest > longestStreak) {
+      longestStreak = longest;
+      longestStreakHabit = habit.name;
+    }
+    if (active > longestActiveStreak) {
+      longestActiveStreak = active;
+      longestActiveHabit = habit.name;
+    }
   });
 
   // TEMP: placeholder values while we build the real logic
@@ -98,11 +106,15 @@ export default function StatsSummary() {
       </div>
       <div>
         <span className="font-semibold">Longest Streak:</span>{" "}
-        {longestStreak} days
+        {longestStreak > 0
+          ? `${longestStreak} days (${longestStreakHabit})`
+          : "No streaks yet"}
       </div>
       <div>
         <span className="font-semibold">Longest Active Streak:</span>{" "}
-        {longestActiveStreak} days
+        {longestActiveStreak > 0
+          ? `${longestActiveStreak} days (${longestActiveHabit})`
+          : "No active streaks"}
       </div>
       <div>
         <span className="font-semibold">Average Daily Completion Rate:</span>{" "}
