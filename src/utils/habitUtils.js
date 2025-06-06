@@ -22,3 +22,23 @@ export function createNewHabit(name, isoDate) {
     },
   };
 }
+
+export function ensureTodayInHistory(habits, isoDate) {
+  return habits.map((habit) => {
+    const hasToday = habit.history?.hasOwnProperty(isoDate);
+    if (!hasToday) {
+      return {
+        ...habit,
+        completedToday: false,
+        history: {
+          ...habit.history,
+          [isoDate]: false,
+        },
+      };
+    }
+    return {
+      ...habit,
+      completedToday: habit.history[isoDate],
+    };
+  });
+}

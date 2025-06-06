@@ -1,6 +1,7 @@
 import { HabitContext } from "./HabitContext";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useToday } from "../hooks/useToday";
+import { ensureTodayInHistory } from "../utils/habitUtils";
 
 export function HabitProvider({ children }) {
   const { isoDate } = useToday();
@@ -27,23 +28,7 @@ export function HabitProvider({ children }) {
   ]);
 
   // Ensure today's entry is always present
-  const updatedHabits = habits.map((habit) => {
-    const hasToday = habit.history?.hasOwnProperty(isoDate);
-    if (!hasToday) {
-      return {
-        ...habit,
-        completedToday: false,
-        history: {
-          ...habit.history,
-          [isoDate]: false,
-        },
-      };
-    }
-    return {
-      ...habit,
-      completedToday: habit.history[isoDate],
-    };
-  });
+  const updatedHabits = ensureTodayInHistory(habits, isoDate);
 
   // Delete logic exposed via context
   function deleteHabit(id) {

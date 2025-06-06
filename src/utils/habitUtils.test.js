@@ -1,4 +1,5 @@
 import { toggleHabit, createNewHabit } from "./habitUtils";
+import { ensureTodayInHistory } from "./habitUtils";
 
 test("toggles completedToday and updates history for the correct habit", () => {
   const habits = [
@@ -36,4 +37,36 @@ test("createNewHabit returns a valid habit object", () => {
   expect(habit.name).toBe(name);
   expect(habit.completedToday).toBe(false);
   expect(habit.history).toEqual({ [isoDate]: false });
+});
+
+test("adds today's entry to habits if missing", () => {
+  const isoDate = "2025-06-06";
+
+  const habits = [
+    {
+      id: 1,
+      name: "Read",
+      completedToday: false,
+      history: {
+        "2025-06-05": true,
+      },
+    },
+    {
+      id: 2,
+      name: "Stretch",
+      completedToday: true,
+      history: {
+        "2025-06-06": true,
+      },
+    },
+  ];
+
+  const result = ensureTodayInHistory(habits, isoDate);
+
+  expect(result[0].history).toHaveProperty(isoDate);
+  expect(result[0].history[isoDate]).toBe(false);
+  expect(result[0].completedToday).toBe(false);
+
+  expect(result[1].history[isoDate]).toBe(true);
+  expect(result[1].completedToday).toBe(true);
 });
