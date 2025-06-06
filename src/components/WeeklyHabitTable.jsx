@@ -1,20 +1,8 @@
 import { useHabits } from "../hooks/useHabits";
-import { format, subDays } from "date-fns";
+import { getLast7Days } from "../utils/dateUtils";
 import { FaCheck } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-
-function getLast7Days() {
-  const days = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = subDays(new Date(), i);
-    days.push({
-      iso: format(date, "yyyy-MM-dd"),
-      label: format(date, "EEE M/d"), // e.g., Mon 6/3
-    });
-  }
-  return days;
-}
 
 export default function WeeklyHabitTable() {
   const { habits } = useHabits();
