@@ -46,7 +46,7 @@ function transformHabitsToHeatmap(habits) {
   });
 
   return Object.entries(dateMap).map(([date, { completed, total }]) => ({
-    date,
+    date: new Date(date + 'T12:00:00'),
     completed,
     total,
     count: total === 0 ? 0 : completed / total,
