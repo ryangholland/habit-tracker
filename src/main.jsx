@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App.jsx";
 import { HabitProvider } from "./context/HabitProvider.jsx";
 import { DeleteDialogProvider } from "./context/DeleteDialogProvider.jsx";
+import { SettingsProvider } from "./context/SettingsProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <HabitProvider>
-      <DeleteDialogProvider>
-        <App />
-      </DeleteDialogProvider>
-    </HabitProvider>
+    <SettingsProvider>
+      <HabitProvider>
+        <DeleteDialogProvider>
+          <App />
+        </DeleteDialogProvider>
+      </HabitProvider>
+    </SettingsProvider>
   </StrictMode>
 );
