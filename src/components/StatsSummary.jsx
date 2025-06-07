@@ -99,7 +99,7 @@ export default function StatsSummary() {
   };
 
   return (
-    <div className=" p-4 rounded-lg border border-gray-700 bg-gray-900 text-white space-y-3 text-sm sm:text-base max-w-2xl mx-auto">
+    <div className="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white space-y-3 text-sm sm:text-base max-w-2xl mx-auto">
       <div>
         <span className="font-semibold">Most Completed Habit:</span>{" "}
         {mostCompletedHabit} ({maxCompletions} completions)

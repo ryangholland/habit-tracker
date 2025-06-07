@@ -55,11 +55,11 @@ function DeleteHabitDialog() {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-lg bg-gray-800 p-6 text-left align-middle shadow-xl border border-gray-700">
-            <DialogTitle className="text-lg font-medium text-white">
+          <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl border border-gray-300 dark:border-gray-700">
+            <DialogTitle className="text-lg font-medium text-black dark:text-white">
               Delete this habit?
             </DialogTitle>
-            <div className="mt-2 text-gray-300">
+            <div className="mt-2 text-gray-700 dark:text-gray-300">
               <p>
                 Are you sure you want to delete{" "}
                 <strong>{habitToDelete?.name}</strong>? This will remove all

@@ -1,10 +1,12 @@
 import { NavLink } from "react-router-dom";
 
 function getTabClass(isActive) {
-  const base = "pb-2 border-b-2 text-2xl hover:text-white hover:border-white";
+  const base =
+    "pb-2 border-b-2 text-2xl hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white";
+
   const active = isActive
-    ? "text-white border-white"
-    : "text-gray-400 border-transparent";
+    ? "text-black dark:text-white border-black dark:border-white"
+    : "text-gray-600 dark:text-gray-400 border-transparent";
 
   return `${base} ${active}`;
 }
@@ -15,7 +17,7 @@ function Tabs() {
 
   return (
     <div className="p-4">
-      <div className="flex border-b border-gray-700 gap-8">
+      <div className="flex border-b border-gray-300 dark:border-gray-700 gap-8">
         <NavLink to="/" className={({ isActive }) => getTabClass(isActive)}>
           Today
         </NavLink>

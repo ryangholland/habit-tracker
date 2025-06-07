@@ -25,8 +25,8 @@ function HabitItem({ habit, toggleHabitStatus }) {
       role="checkbox"
       aria-checked={completedToday}
       tabIndex={0}
-      className="group flex items-center justify-between space-x-2 gap-2 p-2 rounded-lg border border-gray-700 bg-gray-800 
-        hover:bg-gray-700 hover:border-gray-500 transition duration-200 md:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+      className="group flex items-center justify-between space-x-2 gap-2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 
+    hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition duration-200 md:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-black dark:focus-visible:outline-white"
     >
       <div className="flex items-center gap-2">
         <Checkbox
@@ -52,8 +52,10 @@ function HabitItem({ habit, toggleHabitStatus }) {
           </svg>
         </Checkbox>
         <span
-          className={`px-1 text-white ${
-            completedToday ? "line-through text-gray-400" : ""
+          className={`px-1 text-black dark:text-white ${
+            completedToday
+              ? "line-through text-gray-500 dark:text-gray-400"
+              : ""
           }`}
         >
           {name}

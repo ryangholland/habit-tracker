@@ -11,16 +11,17 @@ function Settings() {
     <div className="space-y-8">
       {/* General Settings */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">General Settings</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-black dark:text-white">
+          General Settings
+        </h2>
         <div className="space-y-4">
-          {/* TODO: Dark Mode Toggle */}
           <div className="flex items-center gap-4">
-            <span className="text-white">Dark Mode</span>
+            <span className="text-gray-700 dark:text-white">Dark Mode</span>
             <Switch
               checked={darkMode}
               onChange={setDarkMode}
               className={`${
-                darkMode ? "bg-blue-600" : "bg-gray-600"
+                darkMode ? "bg-blue-600" : "bg-gray-300"
               } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
             >
               <span
@@ -39,14 +40,16 @@ function Settings() {
 
       {/* Habit Settings */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Habit Settings</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-black dark:text-white">
+          Habit Settings
+        </h2>
         <div className="space-y-4">
           {habits.map((habit) => (
             <div
               key={habit.id}
-              className="rounded-md border border-gray-700 bg-gray-800 p-4"
+              className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
             >
-              <p className="text-white">{habit.name}</p>
+              <p className="text-black dark:text-white">{habit.name}</p>
               {/* TODO: Expandable settings */}
             </div>
           ))}

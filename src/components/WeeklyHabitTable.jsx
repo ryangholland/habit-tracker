@@ -10,14 +10,16 @@ export default function WeeklyHabitTable() {
 
   return (
     <div className="overflow-x-auto">
-      <table className="table-auto w-full text-sm text-left text-white border border-gray-700">
+      <table className="table-auto w-full text-sm text-left text-black dark:text-white border border-gray-300 dark:border-gray-700">
         <thead>
           <tr>
-            <th className="p-2 border border-gray-700">Habit</th>
+            <th className="p-2 border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+              Habit
+            </th>
             {days.map((day) => (
               <th
                 key={day.iso}
-                className="p-2 border border-gray-700 text-center"
+                className="p-2 border border-gray-300 dark:border-gray-700 text-center bg-gray-100 dark:bg-gray-800"
               >
                 {day.label}
               </th>
@@ -28,7 +30,7 @@ export default function WeeklyHabitTable() {
           {habits.map((habit) => (
             <tr key={habit.id}>
               <td
-                className="p-2 border border-gray-700 max-w-[70px] overflow-hidden text-ellipsis whitespace-nowrap"
+                className="p-2 border border-gray-300 dark:border-gray-700 max-w-[70px] overflow-hidden text-ellipsis whitespace-nowrap"
                 data-tooltip-id="habit-name-tooltip"
                 data-tooltip-content={habit.name}
               >
@@ -37,12 +39,14 @@ export default function WeeklyHabitTable() {
               {days.map((day) => (
                 <td
                   key={day.iso}
-                  className="p-2 border border-gray-700 text-center"
+                  className="p-2 border border-gray-300 dark:border-gray-700 text-center"
                 >
                   {habit.history?.[day.iso] === true ? (
-                    <FaCheck className="text-blue-500 text-xl inline" />
+                    <FaCheck className="text-blue-600 dark:text-blue-400 text-xl inline" />
                   ) : (
-                    <span className="text-gray-500 text-sm">–</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">
+                      –
+                    </span>
                   )}
                 </td>
               ))}

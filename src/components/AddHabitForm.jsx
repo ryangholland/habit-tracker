@@ -24,14 +24,14 @@ function AddHabitForm() {
 
   return (
     <form
-      className="flex bg-gray-800 rounded-md shadow-md"
+      className="flex bg-gray-100 dark:bg-gray-800 rounded-md shadow-md"
       onSubmit={handleSubmit}
     >
       <Input
         name="habit_name"
         type="text"
         placeholder="Add a habit"
-        className="w-full px-4 py-2 text-white bg-gray-900 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+        className="w-full px-4 py-2 text-black dark:text-white bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
