@@ -3,7 +3,8 @@ import { SettingsContext } from "./SettingsContext";
 
 export function SettingsProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
+    const stored = localStorage.getItem("darkMode");
+    return stored === null ? true : stored === "true";
   });
 
   useEffect(() => {
