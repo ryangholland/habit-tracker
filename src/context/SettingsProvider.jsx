@@ -11,6 +11,11 @@ export function SettingsProvider({ children }) {
     return localStorage.getItem("sortOrder") || "default";
   });
 
+  const [showQuote, setShowQuote] = useState(() => {
+    const stored = localStorage.getItem("showQuote");
+    return stored === null ? true : stored === "true";
+  });
+
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
     document.documentElement.classList.toggle("dark", darkMode);
@@ -20,9 +25,20 @@ export function SettingsProvider({ children }) {
     localStorage.setItem("sortOrder", sortOrder);
   }, [sortOrder]);
 
+  useEffect(() => {
+    localStorage.setItem("showQuote", showQuote);
+  }, [showQuote]);
+
   return (
     <SettingsContext.Provider
-      value={{ darkMode, setDarkMode, sortOrder, setSortOrder }}
+      value={{
+        darkMode,
+        setDarkMode,
+        sortOrder,
+        setSortOrder,
+        showQuote,
+        setShowQuote,
+      }}
     >
       {children}
     </SettingsContext.Provider>
