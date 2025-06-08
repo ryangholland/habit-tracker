@@ -1,11 +1,27 @@
 import { useHabits } from "../hooks/useHabits";
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
-import { Switch } from "@headlessui/react";
+import {
+  Switch,
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption,
+} from "@headlessui/react";
+import { FaChevronDown, FaCheck } from "react-icons/fa";
 
 function Settings() {
   const { habits } = useHabits();
   const { darkMode, setDarkMode } = useContext(SettingsContext);
+  const { sortOrder, setSortOrder } = useContext(SettingsContext);
+
+  const sortOptions = [
+    { value: "default", label: "Default" },
+    { value: "name-asc", label: "Name (A–Z)" },
+    { value: "name-desc", label: "Name (Z–A)" },
+    { value: "incomplete-first", label: "Incomplete First" },
+    { value: "complete-first", label: "Complete First" },
+  ];
 
   return (
     <div className="space-y-8">
@@ -32,6 +48,56 @@ function Settings() {
             </Switch>
           </div>
           {/* TODO: Sort Dropdown */}
+          <div className="space-y-1">
+            <label className="text-gray-700 dark:text-white block">
+              Habit Sort Order
+            </label>
+            <Listbox value={sortOrder} onChange={setSortOrder}>
+              <div className="relative w-64">
+                <ListboxButton className="relative w-full cursor-pointer rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 py-2 pl-3 pr-10 text-left text-black dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 sm:text-sm">
+                  <span className="block truncate">
+                    {sortOptions.find((opt) => opt.value === sortOrder)?.label}
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <FaChevronDown className="h-4 w-4 text-gray-400" />
+                  </span>
+                </ListboxButton>
+
+                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {sortOptions.map((option) => (
+                    <ListboxOption
+                      key={option.value}
+                      value={option.value}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                          active
+                            ? "bg-blue-100 dark:bg-gray-700 text-black dark:text-white"
+                            : "text-black dark:text-white"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
+                          >
+                            {option.label}
+                          </span>
+                          {selected && (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600 dark:text-blue-400">
+                              <FaCheck className="h-4 w-4" />
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
+          </div>
           {/* TODO: Motivational Quote Toggle */}
           {/* TODO: Delete All History Button */}
           {/* TODO: Reset All Data Button */}
