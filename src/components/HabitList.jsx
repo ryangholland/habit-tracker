@@ -1,12 +1,29 @@
 import { useHabits } from "../hooks/useHabits";
 import { toggleHabit } from "../utils/habitUtils";
 import { useToday } from "../hooks/useToday";
-
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext";
 import HabitItem from "./HabitItem";
 
 function HabitList() {
   const { habits, setHabits } = useHabits();
   const { isoDate } = useToday();
+  const { sortOrder } = useContext(SettingsContext);
+
+  const sortedHabits = [...habits].sort((a, b) => {
+    switch (sortOrder) {
+      case "name-asc":
+        return a.name.localeCompare(b.name);
+      case "name-desc":
+        return b.name.localeCompare(a.name);
+      case "incomplete-first":
+        return a.completedToday - b.completedToday;
+      case "complete-first":
+        return b.completedToday - a.completedToday;
+      default:
+        return 0; 
+    }
+  });
 
   const toggleHabitStatus = (id) => {
     setHabits((prevHabits) => toggleHabit(prevHabits, id, isoDate));
@@ -14,7 +31,7 @@ function HabitList() {
 
   return (
     <div className="py-4 flex flex-col gap-4">
-      {habits.map((habit) => (
+      {sortedHabits.map((habit) => (
         <HabitItem
           key={habit.id}
           habit={habit}
