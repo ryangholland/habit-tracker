@@ -30,7 +30,7 @@ function HabitList() {
   };
 
   return (
-    <div className="py-4 flex flex-col gap-4">
+    <div className="mb-2 md:mb-4 flex flex-col gap-4">
       {sortedHabits.map((habit) => (
         <HabitItem
           key={habit.id}
