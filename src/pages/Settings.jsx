@@ -1,5 +1,5 @@
 import { useHabits } from "../hooks/useHabits";
-import { Fragment, useContext } from "react";
+import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import {
   Switch,
@@ -14,6 +14,7 @@ function Settings() {
   const { habits } = useHabits();
   const { darkMode, setDarkMode } = useContext(SettingsContext);
   const { sortOrder, setSortOrder } = useContext(SettingsContext);
+  const { showQuote, setShowQuote } = useContext(SettingsContext);
 
   const sortOptions = [
     { value: "default", label: "Default" },
@@ -43,6 +44,25 @@ function Settings() {
               <span
                 className={`${
                   darkMode ? "translate-x-6" : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              />
+            </Switch>
+          </div>
+          {/* TODO: Motivational Quote Toggle */}
+          <div className="flex items-center gap-4">
+            <span className="text-gray-700 dark:text-white">
+              Show Motivational Quote
+            </span>
+            <Switch
+              checked={showQuote}
+              onChange={setShowQuote}
+              className={`${
+                showQuote ? "bg-blue-600" : "bg-gray-300"
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+            >
+              <span
+                className={`${
+                  showQuote ? "translate-x-6" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
               />
             </Switch>
@@ -98,7 +118,7 @@ function Settings() {
               </div>
             </Listbox>
           </div>
-          {/* TODO: Motivational Quote Toggle */}
+          
           {/* TODO: Delete All History Button */}
           {/* TODO: Reset All Data Button */}
         </div>
