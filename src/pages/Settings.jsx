@@ -9,9 +9,10 @@ import {
   ListboxOption,
 } from "@headlessui/react";
 import { FaChevronDown, FaCheck } from "react-icons/fa";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 function Settings() {
-  const { habits } = useHabits();
+  const { habits, setHabits } = useHabits();
   const { darkMode, setDarkMode } = useContext(SettingsContext);
   const { sortOrder, setSortOrder } = useContext(SettingsContext);
   const { showQuote, setShowQuote } = useContext(SettingsContext);
@@ -157,6 +158,36 @@ function Settings() {
           ))}
         </div>
       </section>
+
+      {/* Dialogs */}
+      <ConfirmationDialog
+      isOpen={showClearHistoryDialog}
+      onClose={() => setShowClearHistoryDialog(false)}
+      onConfirm={() => {
+        const cleared = habits.map((h) => ({
+          ...h,
+          completedToday: false,
+          history: {},
+        }));
+        setHabits(cleared);
+        setShowClearHistoryDialog(false);
+      }}
+      title="Clear All Habit History?"
+      message="This will erase all history data for every habit. Your habits will remain, but all past completions will be lost."
+      confirmLabel="Clear History"
+    />
+
+    <ConfirmationDialog
+      isOpen={showDeleteAllDialog}
+      onClose={() => setShowDeleteAllDialog(false)}
+      onConfirm={() => {
+        setHabits([]);
+        setShowDeleteAllDialog(false);
+      }}
+      title="Delete All Habits?"
+      message="This will delete all your habits and their history. This action cannot be undone."
+      confirmLabel="Delete Everything"
+    />
     </div>
   );
 }
