@@ -1,5 +1,5 @@
 import { useHabits } from "../hooks/useHabits";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import {
   Switch,
@@ -15,6 +15,8 @@ function Settings() {
   const { darkMode, setDarkMode } = useContext(SettingsContext);
   const { sortOrder, setSortOrder } = useContext(SettingsContext);
   const { showQuote, setShowQuote } = useContext(SettingsContext);
+  const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
+  const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
 
   const sortOptions = [
     { value: "default", label: "Default" },
@@ -118,9 +120,23 @@ function Settings() {
               </div>
             </Listbox>
           </div>
-          
+
           {/* TODO: Delete All History Button */}
           {/* TODO: Reset All Data Button */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <button
+              onClick={() => setShowClearHistoryDialog(true)}
+              className="px-4 py-2 rounded-md bg-yellow-300 hover:bg-yellow-400 text-black dark:text-black border border-yellow-400 dark:border-yellow-500 cursor-pointer"
+            >
+              Clear All History
+            </button>
+            <button
+              onClick={() => setShowDeleteAllDialog(true)}
+              className="px-4 py-2 rounded-md bg-red-400 hover:bg-red-500 text-white dark:text-white border border-red-500 cursor-pointer"
+            >
+              Delete All Data
+            </button>
+          </div>
         </div>
       </section>
 
