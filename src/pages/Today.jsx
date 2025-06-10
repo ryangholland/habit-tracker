@@ -3,16 +3,21 @@ import { useToday } from "../hooks/useToday";
 import { useProgress } from "../hooks/useProgress";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
+import {toggleHabit} from "../utils/habitUtils";
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
 
 function Today() {
-  const { habits } = useHabits();
-  const { formatted } = useToday();
+  const { habits, setHabits } = useHabits();
+  const { formatted, weekday, isoDate } = useToday();
   const { progress } = useProgress(habits);
   const { sortOrder } = useContext(SettingsContext);
   const { showQuote } = useContext(SettingsContext);
+
+  const visibleHabits = habits.filter((habit) =>
+    habit.activeDays?.includes(weekday)
+  );
 
   const sortLabelMap = {
     default: "Default",
@@ -20,6 +25,10 @@ function Today() {
     "name-desc": "Name (Z–A)",
     "incomplete-first": "Incomplete First",
     "complete-first": "Complete First",
+  };
+
+  const toggleHabitStatus = (id) => {
+    setHabits((prevHabits) => toggleHabit(prevHabits, id, isoDate));
   };
 
   return (
@@ -30,19 +39,21 @@ function Today() {
           The journey of a thousand miles begins with a single step.
         </p>
       )}
-      {habits.length > 0 && (
+      {visibleHabits.length > 0 && (
         <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-2 text-right">
           Sorted: {sortLabelMap[sortOrder]}
         </p>
       )}
-      {habits.length > 0 && <HabitList />}
-      {habits.length === 0 && (
+      {visibleHabits.length > 0 && (
+        <HabitList habits={visibleHabits} onToggle={toggleHabitStatus} />
+      )}
+      {visibleHabits.length === 0 && (
         <p className="text-gray-600 dark:text-gray-400">
           No habits added yet. Start by adding a habit below.
         </p>
       )}
       <AddHabitForm />
-      {habits.length > 0 && <ProgressBar progress={progress} />}
+      {visibleHabits.length > 0 && <ProgressBar progress={progress} />}
     </>
   );
 }

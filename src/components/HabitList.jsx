@@ -1,13 +1,8 @@
-import { useHabits } from "../hooks/useHabits";
-import { toggleHabit } from "../utils/habitUtils";
-import { useToday } from "../hooks/useToday";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import HabitItem from "./HabitItem";
 
-function HabitList() {
-  const { habits, setHabits } = useHabits();
-  const { isoDate } = useToday();
+function HabitList({ habits, onToggle }) {
   const { sortOrder } = useContext(SettingsContext);
 
   const sortedHabits = [...habits].sort((a, b) => {
@@ -21,22 +16,14 @@ function HabitList() {
       case "complete-first":
         return b.completedToday - a.completedToday;
       default:
-        return 0; 
+        return 0;
     }
   });
-
-  const toggleHabitStatus = (id) => {
-    setHabits((prevHabits) => toggleHabit(prevHabits, id, isoDate));
-  };
 
   return (
     <div className="mb-2 md:mb-4 flex flex-col gap-4">
       {sortedHabits.map((habit) => (
-        <HabitItem
-          key={habit.id}
-          habit={habit}
-          toggleHabitStatus={toggleHabitStatus}
-        />
+        <HabitItem key={habit.id} habit={habit} toggleHabitStatus={onToggle} />
       ))}
     </div>
   );
