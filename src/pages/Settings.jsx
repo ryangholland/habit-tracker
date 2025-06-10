@@ -7,8 +7,10 @@ import {
   ListboxButton,
   ListboxOptions,
   ListboxOption,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
 } from "@headlessui/react";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { FaChevronDown, FaCheck } from "react-icons/fa";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
@@ -26,6 +28,16 @@ function Settings() {
     { value: "name-desc", label: "Name (Z–A)" },
     { value: "incomplete-first", label: "Incomplete First" },
     { value: "complete-first", label: "Complete First" },
+  ];
+
+  const daysOfWeek = [
+    { label: "Sun", index: 0 },
+    { label: "Mon", index: 1 },
+    { label: "Tue", index: 2 },
+    { label: "Wed", index: 3 },
+    { label: "Thu", index: 4 },
+    { label: "Fri", index: 5 },
+    { label: "Sat", index: 6 },
   ];
 
   return (
@@ -161,10 +173,40 @@ function Settings() {
                     />
                   </DisclosureButton>
                   <DisclosurePanel className="px-4 pb-4 pt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                    {/* Active Days, Clear, Delete buttons go here (Step 4) */}
-                    <p className="italic text-xs text-gray-500">
-                      Expanded content goes here
-                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      {daysOfWeek.map(({ label, index }) => {
+                        const isActive = habit.activeDays?.includes(index);
+
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setHabits((prevHabits) =>
+                                prevHabits.map((h) =>
+                                  h.id === habit.id
+                                    ? {
+                                        ...h,
+                                        activeDays: isActive
+                                          ? h.activeDays.filter(
+                                              (d) => d !== index
+                                            )
+                                          : [...h.activeDays, index],
+                                      }
+                                    : h
+                                )
+                              );
+                            }}
+                            className={`px-2 py-1 rounded-md text-sm border ${
+                              isActive
+                                ? "bg-blue-600 text-white border-blue-700"
+                                : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </DisclosurePanel>
                 </div>
               )}
