@@ -9,5 +9,7 @@ export function useToday() {
 
   const isoDate = today.toISOString().slice(0, 10); // YYYY-MM-DD
 
-  return { today, formatted, isoDate };
+  const weekday = today.getDay();
+
+  return { today, formatted, isoDate, weekday };
 }
