@@ -13,14 +13,17 @@ import {
 } from "@headlessui/react";
 import { FaChevronDown, FaCheck } from "react-icons/fa";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import { useDeleteDialog } from "../hooks/useDeleteDialog";
 
 function Settings() {
   const { habits, setHabits } = useHabits();
+  const { openDeleteDialog } = useDeleteDialog();
   const { darkMode, setDarkMode } = useContext(SettingsContext);
   const { sortOrder, setSortOrder } = useContext(SettingsContext);
   const { showQuote, setShowQuote } = useContext(SettingsContext);
   const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
+  const [habitToClear, setHabitToClear] = useState(null);
 
   const sortOptions = [
     { value: "default", label: "Default" },
@@ -240,6 +243,21 @@ function Settings() {
                         );
                       })}
                     </div>
+
+                    <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                      <button
+                        onClick={() => setHabitToClear(habit)}
+                        className="px-3 py-1 rounded-md bg-yellow-300 hover:bg-yellow-400 text-black border border-yellow-400 dark:border-yellow-500 dark:text-black text-sm"
+                      >
+                        Clear History
+                      </button>
+                      <button
+                        onClick={() => openDeleteDialog(habit)}
+                        className="px-3 py-1 rounded-md bg-red-500 hover:bg-red-600 text-white border border-red-600 text-sm"
+                      >
+                        Delete Habit
+                      </button>
+                    </div>
                   </DisclosurePanel>
                 </div>
               )}
@@ -276,6 +294,26 @@ function Settings() {
         title="Delete All Habits?"
         message="This will delete all your habits and their history. This action cannot be undone."
         confirmLabel="Delete Everything"
+      />
+
+      <ConfirmationDialog
+        isOpen={habitToClear !== null}
+        onClose={() => setHabitToClear(null)}
+        onConfirm={() => {
+          if (habitToClear) {
+            setHabits((prev) =>
+              prev.map((h) =>
+                h.id === habitToClear.id
+                  ? { ...h, history: {}, completedToday: false }
+                  : h
+              )
+            );
+          }
+          setHabitToClear(null);
+        }}
+        title={`Clear History for "${habitToClear?.name}"?`}
+        message="This will erase all progress and streaks for this habit, but the habit itself will remain."
+        confirmLabel="Clear History"
       />
     </div>
   );
