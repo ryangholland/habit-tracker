@@ -20,25 +20,30 @@ export function createNewHabit(name, isoDate) {
     history: {
       [isoDate]: false,
     },
+    activeDays: [0, 1, 2, 3, 4, 5, 6],
   };
 }
 
 export function ensureTodayInHistory(habits, isoDate) {
   return habits.map((habit) => {
     const hasToday = habit.history?.hasOwnProperty(isoDate);
+    const withActiveDays = habit.activeDays
+      ? habit
+      : { ...habit, activeDays: [0, 1, 2, 3, 4, 5, 6] };
+
     if (!hasToday) {
       return {
-        ...habit,
+        ...withActiveDays,
         completedToday: false,
         history: {
-          ...habit.history,
+          ...withActiveDays.history,
           [isoDate]: false,
         },
       };
     }
     return {
-      ...habit,
-      completedToday: habit.history[isoDate],
+      ...withActiveDays,
+      completedToday: withActiveDays.history[isoDate],
     };
   });
 }
