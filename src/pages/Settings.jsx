@@ -24,6 +24,8 @@ function Settings() {
   const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
   const [habitToClear, setHabitToClear] = useState(null);
+  const [editingHabitId, setEditingHabitId] = useState(null);
+  const [editedName, setEditedName] = useState("");
 
   const sortOptions = [
     { value: "default", label: "Default" },
@@ -176,6 +178,63 @@ function Settings() {
                     />
                   </DisclosureButton>
                   <DisclosurePanel className="px-4 pb-4 pt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    {editingHabitId === habit.id ? (
+                      <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                        <input
+                          type="text"
+                          value={editedName}
+                          onChange={(e) => setEditedName(e.target.value)}
+                          className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white w-full sm:w-auto"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              const newName = editedName.trim();
+                              if (newName) {
+                                setHabits((prev) =>
+                                  prev.map((h) =>
+                                    h.id === habit.id
+                                      ? { ...h, name: newName }
+                                      : h
+                                  )
+                                );
+                              }
+                              setEditingHabitId(null);
+                              setEditedName("");
+                            }}
+                            className="px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingHabitId(null);
+                              setEditedName("");
+                            }}
+                            className="px-3 py-1 rounded-md bg-gray-400 text-white text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Habit Name:{" "}
+                          <span className="font-semibold">{habit.name}</span>
+                        </p>
+                        <button
+                          onClick={() => {
+                            setEditingHabitId(habit.id);
+                            setEditedName(habit.name);
+                          }}
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+
                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">
                       Active Days
                     </label>
