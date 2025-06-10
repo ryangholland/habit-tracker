@@ -164,7 +164,7 @@ function Settings() {
             <Disclosure key={habit.id}>
               {({ open }) => (
                 <div className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
-                  <DisclosureButton className="w-full flex justify-between items-center px-4 py-3 text-left text-black dark:text-white font-medium">
+                  <DisclosureButton className="w-full flex justify-between items-center px-4 py-3 text-left text-black dark:text-white font-medium cursor-pointer">
                     {habit.name}
                     <FaChevronDown
                       className={`h-4 w-4 transform transition-transform ${
@@ -173,6 +173,39 @@ function Settings() {
                     />
                   </DisclosureButton>
                   <DisclosurePanel className="px-4 pb-4 pt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">
+                      Active Days
+                    </label>
+
+                    {/* "Every Day" Toggle */}
+                    <button
+                      onClick={() => {
+                        const allDays = [0, 1, 2, 3, 4, 5, 6];
+                        const hasAllDays =
+                          habit.activeDays?.length === 7 &&
+                          allDays.every((d) => habit.activeDays.includes(d));
+
+                        setHabits((prev) =>
+                          prev.map((h) =>
+                            h.id === habit.id
+                              ? {
+                                  ...h,
+                                  activeDays: hasAllDays ? [] : allDays,
+                                }
+                              : h
+                          )
+                        );
+                      }}
+                      className={`text-sm px-3 py-1 rounded-md border cursor-pointer ${
+                        habit.activeDays?.length === 7
+                          ? "bg-green-600 text-white border-green-700"
+                          : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
+                      }`}
+                    >
+                      Every Day
+                    </button>
+
+                    {/* Day Buttons */}
                     <div className="flex gap-2 flex-wrap">
                       {daysOfWeek.map(({ label, index }) => {
                         const isActive = habit.activeDays?.includes(index);
@@ -196,7 +229,7 @@ function Settings() {
                                 )
                               );
                             }}
-                            className={`px-2 py-1 rounded-md text-sm border ${
+                            className={`px-2 py-1 rounded-md text-sm border cursor-pointer ${
                               isActive
                                 ? "bg-blue-600 text-white border-blue-700"
                                 : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
