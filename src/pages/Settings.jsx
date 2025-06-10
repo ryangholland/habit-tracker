@@ -8,6 +8,7 @@ import {
   ListboxOptions,
   ListboxOption,
 } from "@headlessui/react";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { FaChevronDown, FaCheck } from "react-icons/fa";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
@@ -148,46 +149,59 @@ function Settings() {
         </h2>
         <div className="space-y-4">
           {habits.map((habit) => (
-            <div
-              key={habit.id}
-              className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-            >
-              <p className="text-black dark:text-white">{habit.name}</p>
-              {/* TODO: Expandable settings */}
-            </div>
+            <Disclosure key={habit.id}>
+              {({ open }) => (
+                <div className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
+                  <DisclosureButton className="w-full flex justify-between items-center px-4 py-3 text-left text-black dark:text-white font-medium">
+                    {habit.name}
+                    <FaChevronDown
+                      className={`h-4 w-4 transform transition-transform ${
+                        open ? "rotate-180" : ""
+                      }`}
+                    />
+                  </DisclosureButton>
+                  <DisclosurePanel className="px-4 pb-4 pt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    {/* Active Days, Clear, Delete buttons go here (Step 4) */}
+                    <p className="italic text-xs text-gray-500">
+                      Expanded content goes here
+                    </p>
+                  </DisclosurePanel>
+                </div>
+              )}
+            </Disclosure>
           ))}
         </div>
       </section>
 
       {/* Dialogs */}
       <ConfirmationDialog
-      isOpen={showClearHistoryDialog}
-      onClose={() => setShowClearHistoryDialog(false)}
-      onConfirm={() => {
-        const cleared = habits.map((h) => ({
-          ...h,
-          completedToday: false,
-          history: {},
-        }));
-        setHabits(cleared);
-        setShowClearHistoryDialog(false);
-      }}
-      title="Clear All Habit History?"
-      message="This will erase all history data for every habit. Your habits will remain, but all past completions will be lost."
-      confirmLabel="Clear History"
-    />
+        isOpen={showClearHistoryDialog}
+        onClose={() => setShowClearHistoryDialog(false)}
+        onConfirm={() => {
+          const cleared = habits.map((h) => ({
+            ...h,
+            completedToday: false,
+            history: {},
+          }));
+          setHabits(cleared);
+          setShowClearHistoryDialog(false);
+        }}
+        title="Clear All Habit History?"
+        message="This will erase all history data for every habit. Your habits will remain, but all past completions will be lost."
+        confirmLabel="Clear History"
+      />
 
-    <ConfirmationDialog
-      isOpen={showDeleteAllDialog}
-      onClose={() => setShowDeleteAllDialog(false)}
-      onConfirm={() => {
-        setHabits([]);
-        setShowDeleteAllDialog(false);
-      }}
-      title="Delete All Habits?"
-      message="This will delete all your habits and their history. This action cannot be undone."
-      confirmLabel="Delete Everything"
-    />
+      <ConfirmationDialog
+        isOpen={showDeleteAllDialog}
+        onClose={() => setShowDeleteAllDialog(false)}
+        onConfirm={() => {
+          setHabits([]);
+          setShowDeleteAllDialog(false);
+        }}
+        title="Delete All Habits?"
+        message="This will delete all your habits and their history. This action cannot be undone."
+        confirmLabel="Delete Everything"
+      />
     </div>
   );
 }
