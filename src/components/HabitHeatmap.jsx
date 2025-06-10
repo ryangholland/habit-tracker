@@ -12,9 +12,13 @@ function transformHabitsToHeatmap(habits) {
 
   habits.forEach((habit) => {
     Object.entries(habit.history || {}).forEach(([date, done]) => {
+      const dayIndex = new Date(date + "T00:00:00").getDay();
+      if (!habit.activeDays?.includes(dayIndex)) return;
+
       if (!dateMap[date]) {
         dateMap[date] = { completed: 0, total: 0 };
       }
+
       dateMap[date].total += 1;
       if (done) dateMap[date].completed += 1;
     });
