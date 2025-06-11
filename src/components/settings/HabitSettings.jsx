@@ -77,7 +77,7 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   setEditingHabitId(null);
                                   setEditedName("");
                                 }}
-                                className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                                className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md cursor-pointer"
                               >
                                 Save
                               </button>
@@ -86,7 +86,7 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   setEditingHabitId(null);
                                   setEditedName("");
                                 }}
-                                className="text-sm px-3 py-1 bg-gray-300 hover:bg-gray-400 text-black rounded-md"
+                                className="text-sm px-3 py-1 bg-gray-300 hover:bg-gray-400 text-black rounded-md cursor-pointer"
                               >
                                 Cancel
                               </button>
@@ -99,7 +99,7 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   setEditingHabitId(habit.id);
                                   setEditedName(habit.name);
                                 }}
-                                className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                                className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
                                 aria-label="Edit Habit Name"
                               >
                                 <svg
@@ -147,7 +147,7 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                 );
                               }
                             }}
-                            className="w-4 h-4"
+                            className="w-4 h-4 cursor-pointer"
                             id={`everyday-${habit.id}`}
                           />
                           <label
@@ -188,7 +188,7 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   isActive
                                     ? "bg-blue-600 text-white border-blue-700"
                                     : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
-                                } ${isLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                                } ${isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
                               >
                                 {label}
                               </button>
@@ -201,13 +201,13 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                       <div className="py-4 flex flex-wrap gap-3">
                         <button
                           onClick={() => setHabitToClear(habit)}
-                          className="text-sm px-4 py-2 bg-yellow-300 hover:bg-yellow-400 text-black border border-yellow-400 dark:border-yellow-500 rounded-md"
+                          className="text-sm px-4 py-2 bg-yellow-300 hover:bg-yellow-400 text-black border border-yellow-400 dark:border-yellow-500 rounded-md cursor-pointer"
                         >
                           Clear History
                         </button>
                         <button
                           onClick={() => openDeleteDialog(habit)}
-                          className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white border border-red-600 rounded-md"
+                          className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white border border-red-600 rounded-md cursor-pointer"
                         >
                           Delete Habit
                         </button>
