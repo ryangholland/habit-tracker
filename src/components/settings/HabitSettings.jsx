@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 
-// Helper
 const isEveryDay = (activeDays = []) =>
-  activeDays.length === 7 && [0, 1, 2, 3, 4, 5, 6].every((d) => activeDays.includes(d));
+  activeDays.length === 7 &&
+  [0, 1, 2, 3, 4, 5, 6].every((d) => activeDays.includes(d));
 
-function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear }) {
+function HabitSettings({
+  habits,
+  setHabits,
+  openDeleteDialog,
+  setHabitToClear,
+}) {
   const [editingHabitId, setEditingHabitId] = useState(null);
   const [editedName, setEditedName] = useState("");
   const [everyDayEnabled, setEveryDayEnabled] = useState({});
@@ -49,51 +58,57 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                       />
                     </DisclosureButton>
 
-                    <DisclosurePanel className="px-4 py-4 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 rounded-b-md border-t border-gray-300 dark:border-gray-600 space-y-4">
-                      {/* Habit Name Editing */}
-                      {editingHabitId === habit.id ? (
-                        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-                          <input
-                            type="text"
-                            value={editedName}
-                            onChange={(e) => setEditedName(e.target.value)}
-                            className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white w-full sm:w-auto"
-                          />
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => {
-                                const newName = editedName.trim();
-                                if (newName) {
-                                  setHabits((prev) =>
-                                    prev.map((h) =>
-                                      h.id === habit.id ? { ...h, name: newName } : h
-                                    )
-                                  );
-                                }
-                                setEditingHabitId(null);
-                                setEditedName("");
-                              }}
-                              className="px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={() => {
-                                setEditingHabitId(null);
-                                setEditedName("");
-                              }}
-                              className="px-3 py-1 rounded-md bg-gray-400 text-white text-sm"
-                            >
-                              Cancel
-                            </button>
-                          </div>
+                    <DisclosurePanel className="divide-y divide-gray-200 dark:divide-gray-700 px-4 py-4 bg-white dark:bg-gray-800 rounded-b-md border-t border-gray-300 dark:border-gray-600">
+                      {/* Habit Name */}
+                      <div className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                          <label className="block font-medium text-gray-900 dark:text-white text-sm mb-1">
+                            Habit Name
+                          </label>
+                          {editingHabitId === habit.id ? (
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-black dark:text-white text-sm"
+                              />
+                              <button
+                                onClick={() => {
+                                  const newName = editedName.trim();
+                                  if (newName) {
+                                    setHabits((prev) =>
+                                      prev.map((h) =>
+                                        h.id === habit.id
+                                          ? { ...h, name: newName }
+                                          : h
+                                      )
+                                    );
+                                  }
+                                  setEditingHabitId(null);
+                                  setEditedName("");
+                                }}
+                                className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingHabitId(null);
+                                  setEditedName("");
+                                }}
+                                className="text-sm px-3 py-1 bg-gray-300 hover:bg-gray-400 text-black rounded-md"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-800 dark:text-gray-300">
+                              {habit.name}
+                            </p>
+                          )}
                         </div>
-                      ) : (
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Habit Name:{" "}
-                            <span className="font-semibold">{habit.name}</span>
-                          </p>
+                        {editingHabitId !== habit.id && (
                           <button
                             onClick={() => {
                               setEditingHabitId(habit.id);
@@ -103,95 +118,105 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                           >
                             Edit
                           </button>
-                        </div>
-                      )}
-
-                      {/* Every Day Checkbox */}
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={checkboxChecked}
-                          onChange={() => {
-                            const enable = !checkboxChecked;
-
-                            setEveryDayEnabled((prev) => ({
-                              ...prev,
-                              [habit.id]: enable,
-                            }));
-
-                            if (enable) {
-                              setHabits((prev) =>
-                                prev.map((h) =>
-                                  h.id === habit.id
-                                    ? { ...h, activeDays: [0, 1, 2, 3, 4, 5, 6] }
-                                    : h
-                                )
-                              );
-                            }
-                          }}
-                          className="w-4 h-4"
-                          id={`everyday-${habit.id}`}
-                        />
-                        <label
-                          htmlFor={`everyday-${habit.id}`}
-                          className="text-sm text-black dark:text-white cursor-pointer"
-                          title="Check to enable all days. Uncheck to edit days manually."
-                        >
-                          Every Day
-                        </label>
+                        )}
                       </div>
 
-                      {/* Day Buttons */}
-                      <div className="flex gap-2 flex-wrap">
-                        {daysOfWeek.map(({ label, index }) => {
-                          const isActive = habit.activeDays?.includes(index);
+                      {/* Active Days */}
+                      <div className="py-4 space-y-2">
+                        <label className="block font-medium text-gray-900 dark:text-white text-sm">
+                          Active Days
+                        </label>
 
-                          return (
-                            <button
-                              key={index}
-                              onClick={() => {
-                                setHabits((prevHabits) =>
-                                  prevHabits.map((h) =>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={checkboxChecked}
+                            onChange={() => {
+                              const enable = !checkboxChecked;
+                              setEveryDayEnabled((prev) => ({
+                                ...prev,
+                                [habit.id]: enable,
+                              }));
+                              if (enable) {
+                                setHabits((prev) =>
+                                  prev.map((h) =>
                                     h.id === habit.id
                                       ? {
                                           ...h,
-                                          activeDays: isActive
-                                            ? h.activeDays.filter((d) => d !== index)
-                                            : [...h.activeDays, index],
+                                          activeDays: [0, 1, 2, 3, 4, 5, 6],
                                         }
                                       : h
                                   )
                                 );
-                                // Uncheck "Every Day" if user changes any day
-                                setEveryDayEnabled((prev) => ({
-                                  ...prev,
-                                  [habit.id]: false,
-                                }));
-                              }}
-                              disabled={isLocked}
-                              className={`px-2 py-1 rounded-md text-sm border ${
-                                isActive
-                                  ? "bg-blue-600 text-white border-blue-700"
-                                  : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
-                              } ${isLocked ? "opacity-60 cursor-not-allowed" : ""}`}
-                            >
-                              {label}
-                            </button>
-                          );
-                        })}
+                              }
+                            }}
+                            className="w-4 h-4"
+                            id={`everyday-${habit.id}`}
+                          />
+                          <label
+                            htmlFor={`everyday-${habit.id}`}
+                            className="text-sm text-black dark:text-white cursor-pointer"
+                            title="Check to enable all days. Uncheck to edit days manually."
+                          >
+                            Every Day
+                          </label>
+                        </div>
+
+                        <div className="flex gap-2 flex-wrap mt-2">
+                          {daysOfWeek.map(({ label, index }) => {
+                            const isActive = habit.activeDays?.includes(index);
+                            return (
+                              <button
+                                key={index}
+                                onClick={() => {
+                                  setHabits((prevHabits) =>
+                                    prevHabits.map((h) =>
+                                      h.id === habit.id
+                                        ? {
+                                            ...h,
+                                            activeDays: isActive
+                                              ? h.activeDays.filter(
+                                                  (d) => d !== index
+                                                )
+                                              : [...h.activeDays, index],
+                                          }
+                                        : h
+                                    )
+                                  );
+                                  setEveryDayEnabled((prev) => ({
+                                    ...prev,
+                                    [habit.id]: false,
+                                  }));
+                                }}
+                                disabled={isLocked}
+                                className={`px-2 py-1 rounded-md text-sm border ${
+                                  isActive
+                                    ? "bg-blue-600 text-white border-blue-700"
+                                    : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
+                                } ${
+                                  isLocked
+                                    ? "opacity-60 cursor-not-allowed"
+                                    : ""
+                                }`}
+                              >
+                                {label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      {/* Clear/Delete Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                      {/* Clear/Delete */}
+                      <div className="py-4 flex flex-wrap gap-3">
                         <button
                           onClick={() => setHabitToClear(habit)}
-                          className="px-3 py-1 rounded-md bg-yellow-300 hover:bg-yellow-400 text-black border border-yellow-400 dark:border-yellow-500 dark:text-black text-sm cursor-pointer"
+                          className="text-sm px-4 py-2 bg-yellow-300 hover:bg-yellow-400 text-black border border-yellow-400 dark:border-yellow-500 rounded-md"
                         >
                           Clear History
                         </button>
                         <button
                           onClick={() => openDeleteDialog(habit)}
-                          className="px-3 py-1 rounded-md bg-red-500 hover:bg-red-600 text-white border border-red-600 text-sm cursor-pointer"
+                          className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white border border-red-600 rounded-md"
                         >
                           Delete Habit
                         </button>
