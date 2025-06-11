@@ -7,9 +7,15 @@ import {
 import { FaChevronDown } from "react-icons/fa";
 
 const isEveryDay = (activeDays = []) =>
-  activeDays.length === 7 && [0, 1, 2, 3, 4, 5, 6].every((d) => activeDays.includes(d));
+  activeDays.length === 7 &&
+  [0, 1, 2, 3, 4, 5, 6].every((d) => activeDays.includes(d));
 
-function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear }) {
+function HabitSettings({
+  habits,
+  setHabits,
+  openDeleteDialog,
+  setHabitToClear,
+}) {
   const [editingHabitId, setEditingHabitId] = useState(null);
   const [editedName, setEditedName] = useState("");
   const [everyDayEnabled, setEveryDayEnabled] = useState({});
@@ -31,7 +37,8 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
       </h2>
       <div className="space-y-4">
         {habits.map((habit) => {
-          const checkboxChecked = everyDayEnabled[habit.id] ?? isEveryDay(habit.activeDays);
+          const checkboxChecked =
+            everyDayEnabled[habit.id] ?? isEveryDay(habit.activeDays);
           const isLocked = checkboxChecked;
 
           return (
@@ -45,7 +52,9 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                     <DisclosureButton className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-sm sm:text-base font-medium text-black dark:text-white border-b border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-t-md cursor-pointer">
                       <span>{habit.name}</span>
                       <FaChevronDown
-                        className={`h-4 w-4 transform transition-transform ${open ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 transform transition-transform ${
+                          open ? "rotate-180" : ""
+                        }`}
                       />
                     </DisclosureButton>
 
@@ -70,7 +79,9 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   if (newName) {
                                     setHabits((prev) =>
                                       prev.map((h) =>
-                                        h.id === habit.id ? { ...h, name: newName } : h
+                                        h.id === habit.id
+                                          ? { ...h, name: newName }
+                                          : h
                                       )
                                     );
                                   }
@@ -93,7 +104,9 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                             </div>
                           ) : (
                             <div className="flex items-center gap-2 group">
-                              <span className="text-sm text-gray-800 dark:text-gray-300">{habit.name}</span>
+                              <span className="text-sm text-gray-800 dark:text-gray-300">
+                                {habit.name}
+                              </span>
                               <button
                                 onClick={() => {
                                   setEditingHabitId(habit.id);
@@ -141,7 +154,10 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                 setHabits((prev) =>
                                   prev.map((h) =>
                                     h.id === habit.id
-                                      ? { ...h, activeDays: [0, 1, 2, 3, 4, 5, 6] }
+                                      ? {
+                                          ...h,
+                                          activeDays: [0, 1, 2, 3, 4, 5, 6],
+                                        }
                                       : h
                                   )
                                 );
@@ -172,7 +188,9 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                         ? {
                                             ...h,
                                             activeDays: isActive
-                                              ? h.activeDays.filter((d) => d !== index)
+                                              ? h.activeDays.filter(
+                                                  (d) => d !== index
+                                                )
                                               : [...h.activeDays, index],
                                           }
                                         : h
@@ -188,7 +206,11 @@ function HabitSettings({ habits, setHabits, openDeleteDialog, setHabitToClear })
                                   isActive
                                     ? "bg-blue-600 text-white border-blue-700"
                                     : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
-                                } ${isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+                                } ${
+                                  isLocked
+                                    ? "opacity-60 cursor-not-allowed"
+                                    : "cursor-pointer"
+                                }`}
                               >
                                 {label}
                               </button>
