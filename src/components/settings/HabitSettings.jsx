@@ -61,7 +61,7 @@ function HabitSettings({
             >
               <Disclosure defaultOpen={expandedHabitId === habit.id}>
                 {({ open }) => (
-                  <>
+                  <div>
                     <DisclosureButton className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-sm sm:text-base font-medium text-black dark:text-white border-b border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-t-md cursor-pointer">
                       <span>{habit.name}</span>
                       <FaChevronDown
@@ -248,7 +248,7 @@ function HabitSettings({
                         </button>
                       </div>
                     </DisclosurePanel>
-                  </>
+                  </div>
                 )}
               </Disclosure>
             </div>
