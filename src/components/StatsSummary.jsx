@@ -114,15 +114,6 @@ export default function StatsSummary() {
     }
   });
 
-  // TEMP: placeholder values while we build the real logic
-  const stats = {
-    mostCompletedHabit: "Drink Water",
-    longestStreak: 8,
-    longestActiveStreak: 4,
-    averagePerDay: 3.1,
-    totalCompletions: 186,
-  };
-
   return (
     <div className="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white space-y-3 text-sm sm:text-base max-w-2xl mx-auto">
       <div>
