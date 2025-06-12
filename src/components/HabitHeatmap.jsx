@@ -46,15 +46,17 @@ export default function HabitHeatmap({ data }) {
   const heatmapData = transformHabitsToHeatmap(habits);
 
   return (
-    <div className="overflow-x-auto  mt-2 md:mt-4">
-      <CalendarHeatmap
-        startDate={subDays(new Date(), 120)}
-        endDate={new Date()}
-        values={heatmapData}
-        classForValue={getClassForValue}
-        tooltipDataAttrs={getHeatmapTooltipAttrs}
-        showWeekdayLabels={false}
-      />
+    <div className="mt-2 md:mt-4">
+      <div className="w-full overflow-x-auto">
+        <CalendarHeatmap
+          startDate={subDays(new Date(), 120)}
+          endDate={new Date()}
+          values={heatmapData}
+          classForValue={getClassForValue}
+          tooltipDataAttrs={getHeatmapTooltipAttrs}
+          showWeekdayLabels={false}
+        />
+      </div>
       <Tooltip id="heatmap-tooltip" />
     </div>
   );
