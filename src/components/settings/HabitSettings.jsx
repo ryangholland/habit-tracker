@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -21,6 +21,7 @@ function HabitSettings({
   const [editedName, setEditedName] = useState("");
   const [everyDayEnabled, setEveryDayEnabled] = useState({});
   const [expandedHabitId, setExpandedHabitId] = useState(initiallyExpandedId);
+  const habitRefs = useRef({});
 
   const daysOfWeek = [
     { label: "Sun", index: 0 },
@@ -31,6 +32,15 @@ function HabitSettings({
     { label: "Fri", index: 5 },
     { label: "Sat", index: 6 },
   ];
+
+  useEffect(() => {
+    if (initiallyExpandedId && habitRefs.current[initiallyExpandedId]) {
+      habitRefs.current[initiallyExpandedId].scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [initiallyExpandedId]);
 
   return (
     <section>
@@ -46,6 +56,7 @@ function HabitSettings({
           return (
             <div
               key={habit.id}
+              ref={(el) => (habitRefs.current[habit.id] = el)}
               className="rounded-md shadow-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
             >
               <Disclosure defaultOpen={expandedHabitId === habit.id}>
