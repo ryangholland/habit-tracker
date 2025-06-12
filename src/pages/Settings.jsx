@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useHabits } from "../hooks/useHabits";
 import { useDeleteDialog } from "../hooks/useDeleteDialog";
 import GeneralSettings from "../components/settings/GeneralSettings";
@@ -11,6 +12,8 @@ function Settings() {
   const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
   const [habitToClear, setHabitToClear] = useState(null);
+  const [searchParams] = useSearchParams();
+  const initialHabitId = searchParams.get("habitId");
 
   return (
     <div className="space-y-8">
@@ -26,6 +29,7 @@ function Settings() {
         setHabits={setHabits}
         openDeleteDialog={openDeleteDialog}
         setHabitToClear={setHabitToClear}
+        initiallyExpandedId={initialHabitId}
       />
 
       {/* Dialogs */}
