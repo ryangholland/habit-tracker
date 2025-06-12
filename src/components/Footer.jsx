@@ -3,7 +3,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-800 text-center py-4">
+    <footer className="bg-gray-100 dark:bg-gray-800 text-center py-4 w-full sticky bottom-0 z-10">
       <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center justify-center space-x-2">
         <span>© 2025 Ryan Holland</span>
         <a
