@@ -18,10 +18,11 @@ const Layout = () => {
       </div>
 
       {/* Scrollable main content (row 3) */}
-      <div className="overflow-y-auto">
+      <div className="overflow-y-auto min-h-0">
         <div className="container max-w-4xl mx-auto px-4 md:px-6 pb-24">
-          <main className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 md:p-6 flex flex-col gap-2">
+          <main className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 md:p-6 flex flex-col gap-2 ">
             <Outlet />
+            
           </main>
         </div>
       </div>
