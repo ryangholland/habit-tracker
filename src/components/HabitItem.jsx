@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@headlessui/react";
 import { FaCog, FaTrash } from "react-icons/fa";
 import IconButton from "./IconButton";
@@ -6,6 +7,7 @@ import { useDeleteDialog } from "../hooks/useDeleteDialog";
 function HabitItem({ habit, toggleHabitStatus }) {
   const { id, name, completedToday } = habit;
   const { openDeleteDialog } = useDeleteDialog();
+  const navigate = useNavigate();
 
   const handleItemClick = (e) => {
     if (e.target.closest(".icon-container")) return;
@@ -67,6 +69,7 @@ function HabitItem({ habit, toggleHabitStatus }) {
           label="Edit Habit"
           icon={FaCog}
           className="hover:text-gray-200"
+          onClick={() => navigate(`/settings?habitId=${id}`)}
         />
         <IconButton
           label="Delete Habit"
