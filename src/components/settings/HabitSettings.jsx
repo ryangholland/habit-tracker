@@ -15,10 +15,12 @@ function HabitSettings({
   setHabits,
   openDeleteDialog,
   setHabitToClear,
+  initiallyExpandedId,
 }) {
   const [editingHabitId, setEditingHabitId] = useState(null);
   const [editedName, setEditedName] = useState("");
   const [everyDayEnabled, setEveryDayEnabled] = useState({});
+  const [expandedHabitId, setExpandedHabitId] = useState(initiallyExpandedId);
 
   const daysOfWeek = [
     { label: "Sun", index: 0 },
@@ -46,7 +48,7 @@ function HabitSettings({
               key={habit.id}
               className="rounded-md shadow-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
             >
-              <Disclosure>
+              <Disclosure defaultOpen={expandedHabitId === habit.id}>
                 {({ open }) => (
                   <>
                     <DisclosureButton className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-sm sm:text-base font-medium text-black dark:text-white border-b border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-t-md cursor-pointer">
