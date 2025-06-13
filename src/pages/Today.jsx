@@ -3,14 +3,14 @@ import { useToday } from "../hooks/useToday";
 import { useProgress } from "../hooks/useProgress";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
-import {toggleHabit} from "../utils/habitUtils";
+import { toggleHabit } from "../utils/habitUtils";
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
 
 function Today() {
   const { habits, setHabits } = useHabits();
-  const { formatted, weekday, isoDate } = useToday();
+  const { weekday, isoDate } = useToday();
   const { progress } = useProgress(habits);
   const { sortOrder } = useContext(SettingsContext);
   const { showQuote } = useContext(SettingsContext);
@@ -33,7 +33,15 @@ function Today() {
 
   return (
     <>
-      <h2 className="text-2xl text-black font-semibold dark:text-white">{formatted}</h2>
+      <h2 className="text-2xl text-black font-semibold dark:text-white">
+        {" "}
+        {new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </h2>
       {showQuote && (
         <p className="italic text-gray-700 dark:text-gray-300">
           The journey of a thousand miles begins with a single step.
