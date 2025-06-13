@@ -33,7 +33,7 @@ function Today() {
 
   return (
     <>
-      <h2 className="text-2xl text-black dark:text-white">{formatted}</h2>
+      <h2 className="text-2xl text-black font-semibold dark:text-white">{formatted}</h2>
       {showQuote && (
         <p className="italic text-gray-700 dark:text-gray-300">
           The journey of a thousand miles begins with a single step.

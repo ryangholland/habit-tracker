@@ -5,7 +5,7 @@ import StatsSummary from "../components/StatsSummary";
 function Stats() {
   return (
     <div className="min-h-0 flex flex-col">
-      <h2 className="text-2xl text-black dark:text-white">Stats</h2>
+      <h2 className="text-2xl font-semibold text-black dark:text-white">Stats</h2>
       <h3 className="text-xl text-gray-700 dark:text-gray-300 mx-auto mb-2 md:mb-4 mt-2 md:mt-4">
         Summary
       </h3>
