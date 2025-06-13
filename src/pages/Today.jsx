@@ -4,6 +4,7 @@ import { useProgress } from "../hooks/useProgress";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import { toggleHabit } from "../utils/habitUtils";
+import { getQuoteOfTheDay } from "../utils/quotes";
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
@@ -44,7 +45,7 @@ function Today() {
       </h2>
       {showQuote && (
         <p className="italic text-gray-700 dark:text-gray-300">
-          The journey of a thousand miles begins with a single step.
+          {getQuoteOfTheDay()}
         </p>
       )}
       {visibleHabits.length > 0 && (
