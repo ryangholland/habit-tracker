@@ -84,6 +84,25 @@ function HabitSettings({
                                 type="text"
                                 value={editedName}
                                 onChange={(e) => setEditedName(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    const newName = editedName.trim();
+                                    if (newName) {
+                                      setHabits((prev) =>
+                                        prev.map((h) =>
+                                          h.id === habit.id
+                                            ? { ...h, name: newName }
+                                            : h
+                                        )
+                                      );
+                                    }
+                                    setEditingHabitId(null);
+                                    setEditedName("");
+                                  } else if (e.key === "Escape") {
+                                    setEditingHabitId(null);
+                                    setEditedName("");
+                                  }
+                                }}
                                 className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-black dark:text-white text-sm"
                               />
                               <button
