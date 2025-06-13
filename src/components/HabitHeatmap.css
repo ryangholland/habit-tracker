@@ -1,26 +1,50 @@
+/* Default (dark mode) */
 .color-empty {
-    fill: #1f2937; /* Tailwind gray-800 */
-  }
-  .color-scale-0 {
-    fill: #374151; /* Tailwind gray-700 */
-  }
-  .color-scale-1 {
-    fill: #2563eb33; /* blue-600 low opacity */
-  }
-  .color-scale-2 {
-    fill: #2563eb66;
-  }
-  .color-scale-3 {
-    fill: #2563ebaa;
-  }
-  .color-scale-4 {
-    fill: #2563eb;
-  }
-  .react-calendar-heatmap text {
-    fill: #d1d5db; /* Tailwind gray-300 for labels */
-  }
-  
-  .react-calendar-heatmap {
-    transform: scale(0.75);
-    transform-origin: top;
-  }
+  fill: #1f2937; /* gray-800 */
+}
+.color-scale-0 {
+  fill: #374151; /* gray-700 */
+}
+.color-scale-1 {
+  fill: #2563eb33; /* blue-600 opacity */
+}
+.color-scale-2 {
+  fill: #2563eb66;
+}
+.color-scale-3 {
+  fill: #2563ebaa;
+}
+.color-scale-4 {
+  fill: #2563eb;
+}
+.react-calendar-heatmap text {
+  fill: #d1d5db; /* gray-300 */
+}
+
+/* Light mode overrides */
+html:not(.dark) .color-empty {
+  fill: #e5e7eb; /* gray-200 */
+}
+html:not(.dark) .color-scale-0 {
+  fill: #cbd5e1; /* gray-300 */
+}
+html:not(.dark) .color-scale-1 {
+  fill: #60a5fa33; /* blue-400 w/ opacity */
+}
+html:not(.dark) .color-scale-2 {
+  fill: #60a5fa66;
+}
+html:not(.dark) .color-scale-3 {
+  fill: #3b82f6aa;
+}
+html:not(.dark) .color-scale-4 {
+  fill: #2563eb;
+}
+html:not(.dark) .react-calendar-heatmap text {
+  fill: #4b5563; /* gray-700 */
+}
+
+.react-calendar-heatmap {
+  transform: scale(0.75);
+  transform-origin: top;
+}
