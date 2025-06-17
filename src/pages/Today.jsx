@@ -8,6 +8,7 @@ import { getQuoteOfTheDay } from "../utils/quotes";
 import HabitList from "../components/HabitList";
 import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
+import EditPastDaysDialog from "../components/EditPastDaysDialog";
 
 function Today() {
   const { habits, setHabits } = useHabits();
@@ -78,22 +79,10 @@ function Today() {
         </div>
       )}
 
-      {showEditDialog && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-lg w-full text-black dark:text-white">
-            <h2 className="text-lg font-semibold mb-4">Edit Past Days</h2>
-            <p>
-              This is a placeholder for the upcoming editable weekly dialog.
-            </p>
-            <button
-              onClick={() => setShowEditDialog(false)}
-              className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <EditPastDaysDialog
+        isOpen={showEditDialog}
+        onClose={() => setShowEditDialog(false)}
+      />
     </>
   );
 }
