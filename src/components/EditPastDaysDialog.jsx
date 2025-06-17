@@ -75,7 +75,7 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
                       return (
                         <td
                           key={day.iso}
-                          className={`p-2 border border-gray-300 dark:border-gray-700 text-center ${
+                          className={`p-2 border border-gray-300 dark:border-gray-700 ${
                             isActiveDay
                               ? "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700"
                               : "opacity-40 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
@@ -92,17 +92,19 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
                               : "Inactive day for this habit"
                           }
                         >
-                          {isCompleted ? (
-                            <FaCheck
-                              className={
-                                isActiveDay
-                                  ? "text-blue-600 dark:text-blue-400"
-                                  : "text-gray-400"
-                              }
-                            />
-                          ) : (
-                            <span className="text-gray-400">–</span>
-                          )}
+                          <div className="flex justify-center items-center min-h-[24px]">
+                            {isCompleted ? (
+                              <FaCheck
+                                className={
+                                  isActiveDay
+                                    ? "text-blue-600 dark:text-blue-400"
+                                    : "text-gray-400"
+                                }
+                              />
+                            ) : (
+                              <span className="text-gray-400">–</span>
+                            )}
+                          </div>
                         </td>
                       );
                     })}
@@ -115,7 +117,7 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
           <div className="mt-6 text-center">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md cursor-pointer"
             >
               Done
             </button>
