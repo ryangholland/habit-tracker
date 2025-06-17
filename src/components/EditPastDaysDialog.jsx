@@ -68,17 +68,38 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
                     </td>
                     {days.map((day) => {
                       const isCompleted = habit.history?.[day.iso] === true;
+                      const isActiveDay = habit.activeDays?.includes(
+                        new Date(day.iso + "T00:00:00").getDay()
+                      );
+
                       return (
                         <td
                           key={day.iso}
-                          className="p-2 border border-gray-300 dark:border-gray-700 text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700"
-                          onClick={() => toggleCompletion(habit.id, day.iso)}
-                          title={`Mark as ${
-                            isCompleted ? "incomplete" : "complete"
+                          className={`p-2 border border-gray-300 dark:border-gray-700 text-center ${
+                            isActiveDay
+                              ? "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700"
+                              : "opacity-40 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
                           }`}
+                          onClick={() => {
+                            if (isActiveDay)
+                              toggleCompletion(habit.id, day.iso);
+                          }}
+                          title={
+                            isActiveDay
+                              ? `Mark as ${
+                                  isCompleted ? "incomplete" : "complete"
+                                }`
+                              : "Inactive day for this habit"
+                          }
                         >
                           {isCompleted ? (
-                            <FaCheck className="text-blue-600 dark:text-blue-400 inline" />
+                            <FaCheck
+                              className={
+                                isActiveDay
+                                  ? "text-blue-600 dark:text-blue-400"
+                                  : "text-gray-400"
+                              }
+                            />
                           ) : (
                             <span className="text-gray-400">–</span>
                           )}
