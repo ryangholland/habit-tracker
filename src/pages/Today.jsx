@@ -1,7 +1,7 @@
 import { useHabits } from "../hooks/useHabits";
 import { useToday } from "../hooks/useToday";
 import { useProgress } from "../hooks/useProgress";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import { toggleHabit } from "../utils/habitUtils";
 import { getQuoteOfTheDay } from "../utils/quotes";
@@ -15,6 +15,7 @@ function Today() {
   const { progress } = useProgress(habits);
   const { sortOrder } = useContext(SettingsContext);
   const { showQuote } = useContext(SettingsContext);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const visibleHabits = habits.filter((habit) =>
     habit.activeDays?.includes(weekday)
@@ -65,6 +66,34 @@ function Today() {
       )}
       <AddHabitForm />
       {visibleHabits.length > 0 && <ProgressBar progress={progress} />}
+      {visibleHabits.length > 0 && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => setShowEditDialog(true)}
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors cursor-pointer"
+          >
+            Missed a day?{" "}
+            <span className="font-medium">Edit your past week here</span>
+          </button>
+        </div>
+      )}
+
+      {showEditDialog && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-lg w-full text-black dark:text-white">
+            <h2 className="text-lg font-semibold mb-4">Edit Past Days</h2>
+            <p>
+              This is a placeholder for the upcoming editable weekly dialog.
+            </p>
+            <button
+              onClick={() => setShowEditDialog(false)}
+              className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
