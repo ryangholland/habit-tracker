@@ -36,9 +36,12 @@ function HabitItem({ habit, toggleHabitStatus }) {
           aria-checked={completedToday}
           tabIndex={-1}
           title={completedToday ? "Mark as incomplete" : "Mark as complete"}
-          className="group block size-6 rounded border border-gray-400 bg-gray-800 
-            data-checked:bg-gray-400 focus:outline-none hover:cursor-pointer 
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          className={`group block size-6 rounded border 
+            border-gray-400 dark:border-gray-600
+            bg-white dark:bg-gray-800
+            data-checked:bg-gray-800 dark:data-checked:bg-gray-400
+            focus:outline-none hover:cursor-pointer 
+            focus-visible:outline focus-visible:outline-2 focus-visible:outline-white`}
         >
           <svg
             className="h-4 w-4 text-gray-400 opacity-0 group-data-checked:opacity-100 group-data-checked:text-white"
