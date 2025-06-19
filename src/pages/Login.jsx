@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const { login } = useContext(AuthContext);
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username.trim()) {
-      login(username.trim());
+    if (username.trim() && password.trim()) {
+      const success = login(username.trim(), password.trim());
+      if (success) navigate("/");
     }
   };
 
@@ -23,7 +25,6 @@ function Login() {
         <h1 className="text-2xl font-bold text-center text-black dark:text-white">
           Log In
         </h1>
-
         <input
           type="text"
           placeholder="Enter your username"
@@ -31,14 +32,19 @@ function Login() {
           onChange={(e) => setUsername(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
-
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
+        />
         <button
           type="submit"
           className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
         >
           Log In
         </button>
-
         <button
           type="button"
           onClick={() => navigate("/register")}
