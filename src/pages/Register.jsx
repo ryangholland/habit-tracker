@@ -18,6 +18,9 @@ function Register() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100 dark:bg-gray-900">
+      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
+        Daily Habit Tracker
+      </h1>
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
