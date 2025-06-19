@@ -1,7 +1,12 @@
 import { useContext } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Today from "./pages/Today";
 import Stats from "./pages/Stats";
 import Settings from "./pages/Settings";
@@ -12,8 +17,16 @@ function App() {
 
   const router = createBrowserRouter([
     {
+      path: "/login",
+      element: user ? <Navigate to="/" /> : <Login />,
+    },
+    {
+      path: "/register",
+      element: user ? <Navigate to="/" /> : <Register />,
+    },
+    {
       path: "/",
-      element: user ? <Layout /> : <Login />,
+      element: user ? <Layout /> : <Navigate to="/login" />,
       children: user
         ? [
             { path: "/", element: <Today /> },

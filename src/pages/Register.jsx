@@ -2,15 +2,16 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const { login } = useContext(AuthContext);
+function Register() {
+  const { register } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (username.trim()) {
-      login(username.trim());
+      const success = register(username.trim());
+      if (success) navigate("/"); // redirect to main app
     }
   };
 
@@ -21,34 +22,31 @@ function Login() {
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
       >
         <h1 className="text-2xl font-bold text-center text-black dark:text-white">
-          Log In
+          Register
         </h1>
-
         <input
           type="text"
-          placeholder="Enter your username"
+          placeholder="Choose a username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
-
         <button
           type="submit"
-          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+          className="w-full px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white"
         >
-          Log In
+          Register
         </button>
-
         <button
           type="button"
-          onClick={() => navigate("/register")}
+          onClick={() => navigate("/login")}
           className="w-full text-sm text-center text-blue-600 dark:text-blue-400 hover:underline"
         >
-          Need an account? Register
+          Already have an account? Log in
         </button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;
