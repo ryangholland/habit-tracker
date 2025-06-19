@@ -5,15 +5,18 @@ import App from "./App.jsx";
 import { HabitProvider } from "./context/HabitProvider.jsx";
 import { DeleteDialogProvider } from "./context/DeleteDialogProvider.jsx";
 import { SettingsProvider } from "./context/SettingsProvider";
+import { AuthProvider } from "./context/AuthProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SettingsProvider>
-      <HabitProvider>
-        <DeleteDialogProvider>
-          <App />
-        </DeleteDialogProvider>
-      </HabitProvider>
-    </SettingsProvider>
+    <AuthProvider>
+      <SettingsProvider>
+        <HabitProvider>
+          <DeleteDialogProvider>
+            <App />
+          </DeleteDialogProvider>
+        </HabitProvider>
+      </SettingsProvider>
+    </AuthProvider>
   </StrictMode>
 );
