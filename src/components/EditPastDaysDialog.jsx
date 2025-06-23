@@ -2,32 +2,77 @@ import { useHabits } from "../hooks/useHabits";
 import { getLast7Days } from "../utils/dateUtils";
 import { FaCheck } from "react-icons/fa";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { supabase } from "../supabaseClient";
 
 export default function EditPastDaysDialog({ isOpen, onClose }) {
   const { habits, setHabits } = useHabits();
   const days = getLast7Days();
 
-  const toggleCompletion = (habitId, isoDate) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((habit) => {
-        if (habit.id !== habitId) return habit;
+  const toggleCompletion = async (habitId, isoDate) => {
+    const habit = habits.find((h) => h.id === habitId);
+    if (!habit) return;
 
-        const wasCompleted = habit.history?.[isoDate] === true;
-        const newHistory = {
-          ...habit.history,
-          [isoDate]: !wasCompleted,
-        };
+    const wasCompleted = habit.history?.[isoDate] === true;
+    const newValue = !wasCompleted;
 
-        // If toggling today, also update completedToday
-        const todayISO = new Date().toISOString().slice(0, 10);
-        const isToday = isoDate === todayISO;
+    // Step 1: check if entry exists
+    const { data: existing, error: fetchError } = await supabase
+      .from("habit_history")
+      .select("id")
+      .eq("habit_id", habitId)
+      .eq("date", isoDate)
+      .limit(1)
+      .maybeSingle();
 
-        return {
-          ...habit,
-          history: newHistory,
-          completedToday: isToday ? !wasCompleted : habit.completedToday,
-        };
-      })
+    if (fetchError && fetchError.code !== "PGRST116") {
+      console.error("Error checking history:", fetchError.message);
+      return;
+    }
+
+    if (existing) {
+      // Step 2: update
+      const { error: updateError } = await supabase
+        .from("habit_history")
+        .update({ completed: newValue })
+        .eq("id", existing.id);
+
+      if (updateError) {
+        console.error("Failed to update history:", updateError.message);
+        return;
+      }
+    } else {
+      // Step 3: insert
+      const { error: insertError } = await supabase
+        .from("habit_history")
+        .insert({
+          habit_id: habitId,
+          date: isoDate,
+          completed: newValue,
+        });
+
+      if (insertError) {
+        console.error("Failed to insert history:", insertError.message);
+        return;
+      }
+    }
+
+    // Step 4: update local state
+    setHabits((prev) =>
+      prev.map((h) =>
+        h.id === habitId
+          ? {
+              ...h,
+              history: {
+                ...h.history,
+                [isoDate]: newValue,
+              },
+              completedToday:
+                isoDate === new Date().toISOString().slice(0, 10)
+                  ? newValue
+                  : h.completedToday,
+            }
+          : h
+      )
     );
   };
 
