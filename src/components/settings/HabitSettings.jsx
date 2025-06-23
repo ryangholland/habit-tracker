@@ -5,6 +5,7 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
+import { supabase } from "../../supabaseClient";
 
 const isEveryDay = (activeDays = []) =>
   activeDays.length === 7 &&
@@ -84,17 +85,24 @@ function HabitSettings({
                                 type="text"
                                 value={editedName}
                                 onChange={(e) => setEditedName(e.target.value)}
-                                onKeyDown={(e) => {
+                                onKeyDown={async (e) => {
                                   if (e.key === "Enter") {
                                     const newName = editedName.trim();
                                     if (newName) {
-                                      setHabits((prev) =>
-                                        prev.map((h) =>
-                                          h.id === habit.id
-                                            ? { ...h, name: newName }
-                                            : h
-                                        )
-                                      );
+                                      const { error } = await supabase
+                                        .from("habits")
+                                        .update({ name: newName })
+                                        .eq("id", habit.id);
+
+                                      if (!error) {
+                                        setHabits((prev) =>
+                                          prev.map((h) =>
+                                            h.id === habit.id
+                                              ? { ...h, name: newName }
+                                              : h
+                                          )
+                                        );
+                                      }
                                     }
                                     setEditingHabitId(null);
                                     setEditedName("");
@@ -106,16 +114,23 @@ function HabitSettings({
                                 className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-black dark:text-white text-sm"
                               />
                               <button
-                                onClick={() => {
+                                onClick={async () => {
                                   const newName = editedName.trim();
                                   if (newName) {
-                                    setHabits((prev) =>
-                                      prev.map((h) =>
-                                        h.id === habit.id
-                                          ? { ...h, name: newName }
-                                          : h
-                                      )
-                                    );
+                                    const { error } = await supabase
+                                      .from("habits")
+                                      .update({ name: newName })
+                                      .eq("id", habit.id);
+
+                                    if (!error) {
+                                      setHabits((prev) =>
+                                        prev.map((h) =>
+                                          h.id === habit.id
+                                            ? { ...h, name: newName }
+                                            : h
+                                        )
+                                      );
+                                    }
                                   }
                                   setEditingHabitId(null);
                                   setEditedName("");
@@ -176,20 +191,26 @@ function HabitSettings({
                           <input
                             type="checkbox"
                             checked={checkboxChecked}
-                            onChange={() => {
+                            onChange={async () => {
                               const enable = !checkboxChecked;
-                              setEveryDayEnabled((prev) => ({
-                                ...prev,
-                                [habit.id]: enable,
-                              }));
-                              if (enable) {
+                              const newDays = enable
+                                ? [0, 1, 2, 3, 4, 5, 6]
+                                : [];
+
+                              const { error } = await supabase
+                                .from("habits")
+                                .update({ active_days: newDays })
+                                .eq("id", habit.id);
+
+                              if (!error) {
+                                setEveryDayEnabled((prev) => ({
+                                  ...prev,
+                                  [habit.id]: enable,
+                                }));
                                 setHabits((prev) =>
                                   prev.map((h) =>
                                     h.id === habit.id
-                                      ? {
-                                          ...h,
-                                          activeDays: [0, 1, 2, 3, 4, 5, 6],
-                                        }
+                                      ? { ...h, activeDays: newDays }
                                       : h
                                   )
                                 );
@@ -210,28 +231,32 @@ function HabitSettings({
                         <div className="flex gap-2 flex-wrap mt-2">
                           {daysOfWeek.map(({ label, index }) => {
                             const isActive = habit.activeDays?.includes(index);
+                            const newDays = isActive
+                              ? habit.activeDays.filter((d) => d !== index)
+                              : [...habit.activeDays, index];
+
                             return (
                               <button
                                 key={index}
-                                onClick={() => {
-                                  setHabits((prevHabits) =>
-                                    prevHabits.map((h) =>
-                                      h.id === habit.id
-                                        ? {
-                                            ...h,
-                                            activeDays: isActive
-                                              ? h.activeDays.filter(
-                                                  (d) => d !== index
-                                                )
-                                              : [...h.activeDays, index],
-                                          }
-                                        : h
-                                    )
-                                  );
-                                  setEveryDayEnabled((prev) => ({
-                                    ...prev,
-                                    [habit.id]: false,
-                                  }));
+                                onClick={async () => {
+                                  const { error } = await supabase
+                                    .from("habits")
+                                    .update({ active_days: newDays })
+                                    .eq("id", habit.id);
+
+                                  if (!error) {
+                                    setHabits((prevHabits) =>
+                                      prevHabits.map((h) =>
+                                        h.id === habit.id
+                                          ? { ...h, activeDays: newDays }
+                                          : h
+                                      )
+                                    );
+                                    setEveryDayEnabled((prev) => ({
+                                      ...prev,
+                                      [habit.id]: false,
+                                    }));
+                                  }
                                 }}
                                 disabled={isLocked}
                                 className={`px-2 py-1 rounded-md text-sm border ${
