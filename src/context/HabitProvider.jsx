@@ -1,45 +1,70 @@
 import { HabitContext } from "./HabitContext";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { useToday } from "../hooks/useToday";
-import { ensureTodayInHistory } from "../utils/habitUtils";
+import { useEffect, useState, useContext } from "react";
+import { supabase } from "../supabaseClient";
+import { AuthContext } from "./AuthContext";
 
 export function HabitProvider({ children }) {
-  const { isoDate } = useToday();
+  const { user } = useContext(AuthContext);
+  const [habits, setHabits] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [habits, setHabits] = useLocalStorage("habits", [
-    {
-      id: 1,
-      name: "Read 10 pages",
-      completedToday: false,
-      history: {
-        "2025-05-26": true,
-        "2025-05-25": false,
-      },
-    },
-    {
-      id: 2,
-      name: "Work out",
-      completedToday: false,
-      history: {
-        "2025-05-26": true,
-        "2025-05-25": false,
-      },
-    },
-  ]);
+  // Fetch habits + history on load
+  useEffect(() => {
+    if (!user) {
+      setHabits([]);
+      return;
+    }
 
-  // Ensure today's entry is always present
-  const updatedHabits = ensureTodayInHistory(habits, isoDate);
+    const fetchHabits = async () => {
+      setLoading(true);
 
-  // Delete logic exposed via context
-  function deleteHabit(id) {
-    setHabits((prevHabits) => prevHabits.filter((habit) => habit.id !== id));
-  }
+      const { data, error } = await supabase
+        .from("habits")
+        .select(
+          `
+          id,
+          name,
+          active_days,
+          habit_history (
+            date,
+            completed
+          )
+        `
+        )
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error fetching habits:", error);
+        setHabits([]);
+        return;
+      }
+
+      const transformed = data.map((habit) => {
+        const history = {};
+        habit.habit_history.forEach((entry) => {
+          history[entry.date] = entry.completed;
+        });
+
+        return {
+          id: habit.id,
+          name: habit.name,
+          activeDays: habit.active_days,
+          history,
+          completedToday:
+            history[new Date().toISOString().slice(0, 10)] || false,
+        };
+      });
+
+      setHabits(transformed);
+      setLoading(false);
+    };
+
+    fetchHabits();
+  }, [user]);
 
   return (
-    <HabitContext.Provider
-      value={{ habits: updatedHabits, setHabits, deleteHabit }}
-    >
-      {children}
+    <HabitContext.Provider value={{ habits, setHabits }}>
+      {!loading && children}
     </HabitContext.Provider>
   );
 }
