@@ -62,8 +62,19 @@ export function HabitProvider({ children }) {
     fetchHabits();
   }, [user]);
 
+  const deleteHabit = async (id) => {
+    const { error } = await supabase.from("habits").delete().eq("id", id);
+
+    if (error) {
+      console.error("Failed to delete habit:", error.message);
+      return;
+    }
+
+    setHabits((prev) => prev.filter((h) => h.id !== id));
+  };
+
   return (
-    <HabitContext.Provider value={{ habits, setHabits }}>
+    <HabitContext.Provider value={{ habits, setHabits, deleteHabit }}>
       {!loading && children}
     </HabitContext.Provider>
   );
