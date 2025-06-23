@@ -1,22 +1,64 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useHabits } from "../hooks/useHabits";
 import { useToday } from "../hooks/useToday";
-import { createNewHabit } from "../utils/habitUtils";
-
+import { supabase } from "../supabaseClient";
+import { AuthContext } from "../context/AuthContext";
 import { Input } from "@headlessui/react";
 
 function AddHabitForm() {
+  const { user } = useContext(AuthContext);
   const { habits, setHabits } = useHabits();
-  const { isoDate } = useToday();
   const [inputValue, setInputValue] = useState("");
 
-  function addHabit(name) {
-    if (!name.trim()) return;
-    const newHabit = createNewHabit(name, isoDate);
+  async function addHabit(name) {
+    if (!name.trim() || !user) return;
+
+    const { isoDate } = useToday();
+
+    // Step 1: insert into habits
+    const { data: habit, error: habitError } = await supabase
+      .from("habits")
+      .insert({
+        user_id: user.id,
+        name,
+        active_days: [0, 1, 2, 3, 4, 5, 6], // default to every day
+      })
+      .select()
+      .single();
+
+    if (habitError) {
+      console.error("Error creating habit:", habitError.message);
+      return;
+    }
+
+    // Step 2: insert default history for today
+    const { error: historyError } = await supabase
+      .from("habit_history")
+      .insert({
+        habit_id: habit.id,
+        date: isoDate,
+        completed: false,
+      });
+
+    if (historyError) {
+      console.error("Error creating history:", historyError.message);
+      return;
+    }
+
+    // Step 3: update state manually
+    const newHabit = {
+      id: habit.id,
+      name: habit.name,
+      activeDays: habit.active_days,
+      history: {
+        [isoDate]: false,
+      },
+      completedToday: false,
+    };
+
     setHabits([...habits, newHabit]);
     setInputValue("");
   }
-
   function handleSubmit(e) {
     e.preventDefault();
     addHabit(inputValue);
