@@ -12,6 +12,7 @@ export function HabitProvider({ children }) {
   useEffect(() => {
     if (!user) {
       setHabits([]);
+      setLoading(false);
       return;
     }
 
