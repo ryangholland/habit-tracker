@@ -4,6 +4,13 @@ import { supabase } from "../supabaseClient";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isGuest, setIsGuest] = useState(() => {
+    return localStorage.getItem("isGuest") === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("isGuest", isGuest);
+  }, [isGuest]);
 
   useEffect(() => {
     // Check for user on initial load
@@ -53,7 +60,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, register, logout, isGuest, setIsGuest }}
+    >
       {children}
     </AuthContext.Provider>
   );
