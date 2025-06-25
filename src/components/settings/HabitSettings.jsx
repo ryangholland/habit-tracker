@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import {
   Disclosure,
   DisclosureButton,
@@ -18,11 +19,18 @@ function HabitSettings({
   setHabitToClear,
   initiallyExpandedId,
 }) {
+  const { isGuest } = useContext(AuthContext);
   const [editingHabitId, setEditingHabitId] = useState(null);
   const [editedName, setEditedName] = useState("");
   const [everyDayEnabled, setEveryDayEnabled] = useState({});
   const [expandedHabitId, setExpandedHabitId] = useState(initiallyExpandedId);
   const habitRefs = useRef({});
+
+  function saveToLocalStorage(updatedHabits) {
+    if (isGuest) {
+      localStorage.setItem("guest_habits", JSON.stringify(updatedHabits));
+    }
+  }
 
   const daysOfWeek = [
     { label: "Sun", index: 0 },
@@ -95,13 +103,13 @@ function HabitSettings({
                                         .eq("id", habit.id);
 
                                       if (!error) {
-                                        setHabits((prev) =>
-                                          prev.map((h) =>
-                                            h.id === habit.id
-                                              ? { ...h, name: newName }
-                                              : h
-                                          )
+                                        const updated = habits.map((h) =>
+                                          h.id === habit.id
+                                            ? { ...h, name: newName }
+                                            : h
                                         );
+                                        setHabits(updated);
+                                        saveToLocalStorage(updated);
                                       }
                                     }
                                     setEditingHabitId(null);
@@ -123,13 +131,13 @@ function HabitSettings({
                                       .eq("id", habit.id);
 
                                     if (!error) {
-                                      setHabits((prev) =>
-                                        prev.map((h) =>
-                                          h.id === habit.id
-                                            ? { ...h, name: newName }
-                                            : h
-                                        )
+                                      const updated = habits.map((h) =>
+                                        h.id === habit.id
+                                          ? { ...h, name: newName }
+                                          : h
                                       );
+                                      setHabits(updated);
+                                      saveToLocalStorage(updated);
                                     }
                                   }
                                   setEditingHabitId(null);
@@ -197,23 +205,37 @@ function HabitSettings({
                                 ? [0, 1, 2, 3, 4, 5, 6]
                                 : [];
 
+                              if (isGuest) {
+                                const updated = habits.map((h) =>
+                                  h.id === habit.id
+                                    ? { ...h, activeDays: newDays }
+                                    : h
+                                );
+                                setEveryDayEnabled((prev) => ({
+                                  ...prev,
+                                  [habit.id]: enable,
+                                }));
+                                setHabits(updated);
+                                saveToLocalStorage(updated);
+                                return;
+                              }
+
                               const { error } = await supabase
                                 .from("habits")
                                 .update({ active_days: newDays })
                                 .eq("id", habit.id);
 
                               if (!error) {
+                                const updated = habits.map((h) =>
+                                  h.id === habit.id
+                                    ? { ...h, activeDays: newDays }
+                                    : h
+                                );
                                 setEveryDayEnabled((prev) => ({
                                   ...prev,
                                   [habit.id]: enable,
                                 }));
-                                setHabits((prev) =>
-                                  prev.map((h) =>
-                                    h.id === habit.id
-                                      ? { ...h, activeDays: newDays }
-                                      : h
-                                  )
-                                );
+                                setHabits(updated);
                               }
                             }}
                             className="w-4 h-4 cursor-pointer"
@@ -239,19 +261,33 @@ function HabitSettings({
                               <button
                                 key={index}
                                 onClick={async () => {
+                                  if (isGuest) {
+                                    const updated = habits.map((h) =>
+                                      h.id === habit.id
+                                        ? { ...h, activeDays: newDays }
+                                        : h
+                                    );
+                                    setHabits(updated);
+                                    setEveryDayEnabled((prev) => ({
+                                      ...prev,
+                                      [habit.id]: false,
+                                    }));
+                                    saveToLocalStorage(updated);
+                                    return;
+                                  }
+
                                   const { error } = await supabase
                                     .from("habits")
                                     .update({ active_days: newDays })
                                     .eq("id", habit.id);
 
                                   if (!error) {
-                                    setHabits((prevHabits) =>
-                                      prevHabits.map((h) =>
-                                        h.id === habit.id
-                                          ? { ...h, activeDays: newDays }
-                                          : h
-                                      )
+                                    const updated = habits.map((h) =>
+                                      h.id === habit.id
+                                        ? { ...h, activeDays: newDays }
+                                        : h
                                     );
+                                    setHabits(updated);
                                     setEveryDayEnabled((prev) => ({
                                       ...prev,
                                       [habit.id]: false,
