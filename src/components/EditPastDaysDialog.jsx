@@ -1,10 +1,13 @@
 import { useHabits } from "../hooks/useHabits";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { getLast7Days } from "../utils/dateUtils";
 import { FaCheck } from "react-icons/fa";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { supabase } from "../supabaseClient";
 
 export default function EditPastDaysDialog({ isOpen, onClose }) {
+  const { isGuest } = useContext(AuthContext);
   const { habits, setHabits } = useHabits();
   const days = getLast7Days();
 
@@ -15,7 +18,29 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
     const wasCompleted = habit.history?.[isoDate] === true;
     const newValue = !wasCompleted;
 
-    // Step 1: check if entry exists
+    // GUEST MODE LOGIC
+    if (isGuest) {
+      const updated = habits.map((h) =>
+        h.id === habitId
+          ? {
+              ...h,
+              history: {
+                ...h.history,
+                [isoDate]: newValue,
+              },
+              completedToday:
+                isoDate === new Date().toISOString().slice(0, 10)
+                  ? newValue
+                  : h.completedToday,
+            }
+          : h
+      );
+      setHabits(updated);
+      localStorage.setItem("guest_habits", JSON.stringify(updated));
+      return;
+    }
+
+    // NORMAL USER LOGIC
     const { data: existing, error: fetchError } = await supabase
       .from("habit_history")
       .select("id")
@@ -30,7 +55,6 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
     }
 
     if (existing) {
-      // Step 2: update
       const { error: updateError } = await supabase
         .from("habit_history")
         .update({ completed: newValue })
@@ -41,7 +65,6 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
         return;
       }
     } else {
-      // Step 3: insert
       const { error: insertError } = await supabase
         .from("habit_history")
         .insert({
@@ -56,7 +79,7 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
       }
     }
 
-    // Step 4: update local state
+    // Update local state
     setHabits((prev) =>
       prev.map((h) =>
         h.id === habitId
