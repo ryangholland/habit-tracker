@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const { login } = useContext(AuthContext);
+  const { login, setIsGuest } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -54,6 +54,16 @@ function Login() {
           className="w-full text-sm text-center text-blue-600 dark:text-blue-400 hover:underline"
         >
           Need an account? Register
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setIsGuest(true);
+            navigate("/");
+          }}
+          className="w-full text-sm text-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
+        >
+          Continue as Guest
         </button>
       </form>
     </div>
