@@ -1,15 +1,62 @@
-import { HabitContext } from "./HabitContext";
 import { useEffect, useState, useContext } from "react";
-import { supabase } from "../supabaseClient";
+import { HabitContext } from "./HabitContext";
 import { AuthContext } from "./AuthContext";
+import { supabase } from "../supabaseClient";
+import { useToday } from "../hooks/useToday";
+import { ensureTodayInHistory, createNewHabit } from "../utils/habitUtils";
 
 export function HabitProvider({ children }) {
-  const { user } = useContext(AuthContext);
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user, isGuest } = useContext(AuthContext);
+  const { isoDate } = useToday();
 
-  // Fetch habits + history on load
   useEffect(() => {
+    if (isGuest) {
+      // Load from localStorage
+      const stored = localStorage.getItem("guest_habits");
+      let parsed = [];
+
+      if (stored) {
+        try {
+          parsed = JSON.parse(stored);
+        } catch {
+          parsed = [];
+        }
+      }
+
+      // If empty, generate new dummy data
+      if (!parsed.length) {
+        const demoNames = ["Drink Water", "Stretch", "Read"];
+        const pastDates = Array.from({ length: 21 }, (_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          return date.toISOString().slice(0, 10);
+        });
+
+        parsed = demoNames.map((name) => {
+          const habit = createNewHabit(name, isoDate);
+          habit.history = {};
+          habit.activeDays = [1, 2, 3, 4, 5, 6, 0];
+
+          pastDates.forEach((d) => {
+            const rand = Math.random() < 0.7;
+            habit.history[d] = rand;
+          });
+
+          habit.completedToday = habit.history[isoDate] || false;
+          return habit;
+        });
+
+        localStorage.setItem("guest_habits", JSON.stringify(parsed));
+      }
+
+      const withToday = ensureTodayInHistory(parsed, isoDate);
+      setHabits(withToday);
+      setLoading(false);
+      return;
+    }
+
     if (!user) {
       setHabits([]);
       setLoading(false);
@@ -61,9 +108,16 @@ export function HabitProvider({ children }) {
     };
 
     fetchHabits();
-  }, [user]);
+  }, [user, isGuest, isoDate]);
 
   const deleteHabit = async (id) => {
+    if (isGuest) {
+      const updated = habits.filter((h) => h.id !== id);
+      setHabits(updated);
+      localStorage.setItem("guest_habits", JSON.stringify(updated));
+      return;
+    }
+    
     const { error } = await supabase.from("habits").delete().eq("id", id);
 
     if (error) {
