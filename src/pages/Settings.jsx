@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHabits } from "../hooks/useHabits";
 import { useDeleteDialog } from "../hooks/useDeleteDialog";
+import { AuthContext } from "../context/AuthContext";
 import GeneralSettings from "../components/settings/GeneralSettings";
 import HabitSettings from "../components/settings/HabitSettings";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
 function Settings() {
   const { habits, setHabits } = useHabits();
+  const { isGuest } = useContext(AuthContext);
   const { openDeleteDialog } = useDeleteDialog();
   const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
@@ -43,6 +45,9 @@ function Settings() {
             history: {},
           }));
           setHabits(cleared);
+          if (isGuest) {
+            localStorage.setItem("guest_habits", JSON.stringify(cleared));
+          }
           setShowClearHistoryDialog(false);
         }}
         title="Clear All Habit History?"
@@ -55,6 +60,9 @@ function Settings() {
         onClose={() => setShowDeleteAllDialog(false)}
         onConfirm={() => {
           setHabits([]);
+          if (isGuest) {
+            localStorage.setItem("guest_habits", JSON.stringify([]));
+          }
           setShowDeleteAllDialog(false);
         }}
         title="Delete All Habits?"
@@ -67,13 +75,15 @@ function Settings() {
         onClose={() => setHabitToClear(null)}
         onConfirm={() => {
           if (habitToClear) {
-            setHabits((prev) =>
-              prev.map((h) =>
-                h.id === habitToClear.id
-                  ? { ...h, history: {}, completedToday: false }
-                  : h
-              )
+            const updated = habits.map((h) =>
+              h.id === habitToClear.id
+                ? { ...h, history: {}, completedToday: false }
+                : h
             );
+            setHabits(updated);
+            if (isGuest) {
+              localStorage.setItem("guest_habits", JSON.stringify(updated));
+            }
           }
           setHabitToClear(null);
         }}

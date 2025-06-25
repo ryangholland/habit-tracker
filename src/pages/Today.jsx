@@ -9,6 +9,8 @@ import AddHabitForm from "../components/AddHabitForm";
 import ProgressBar from "../components/ProgressBar";
 import EditPastDaysDialog from "../components/EditPastDaysDialog";
 import { supabase } from "../supabaseClient";
+import { toggleHabit } from "../utils/habitUtils";
+import { AuthContext } from "../context/AuthContext";
 
 function Today() {
   const { habits, setHabits } = useHabits();
@@ -16,6 +18,7 @@ function Today() {
   const { progress } = useProgress(habits);
   const { sortOrder } = useContext(SettingsContext);
   const { showQuote } = useContext(SettingsContext);
+  const { isGuest } = useContext(AuthContext);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const visibleHabits = habits.filter((habit) =>
@@ -31,6 +34,13 @@ function Today() {
   };
 
   const toggleHabitStatus = async (id) => {
+    if (isGuest) {
+      const updated = toggleHabit(habits, id, isoDate);
+      setHabits(updated);
+      localStorage.setItem("guest_habits", JSON.stringify(updated));
+      return;
+    }
+
     const habit = habits.find((h) => h.id === id);
     if (!habit) return;
 

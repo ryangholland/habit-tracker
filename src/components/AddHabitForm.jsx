@@ -4,18 +4,29 @@ import { useToday } from "../hooks/useToday";
 import { supabase } from "../supabaseClient";
 import { AuthContext } from "../context/AuthContext";
 import { Input } from "@headlessui/react";
+import { createNewHabit } from "../utils/habitUtils";
 
 function AddHabitForm() {
-  const { user } = useContext(AuthContext);
+  const { user, isGuest } = useContext(AuthContext);
   const { habits, setHabits } = useHabits();
   const [inputValue, setInputValue] = useState("");
+  const { isoDate } = useToday();
 
   async function addHabit(name) {
-    if (!name.trim() || !user) return;
+    if (!name.trim()) return;
 
-    const { isoDate } = useToday();
+    if (isGuest) {
+      const newHabit = createNewHabit(name, isoDate);
+      const updated = [...habits, newHabit];
+      setHabits(updated);
+      localStorage.setItem("guest_habits", JSON.stringify(updated));
+      setInputValue("");
+      return;
+    }
 
-    // Step 1: insert into habits
+    if (!user) return;
+
+    // Supabase flow
     const { data: habit, error: habitError } = await supabase
       .from("habits")
       .insert({
@@ -31,7 +42,6 @@ function AddHabitForm() {
       return;
     }
 
-    // Step 2: insert default history for today
     const { error: historyError } = await supabase
       .from("habit_history")
       .insert({
@@ -45,20 +55,18 @@ function AddHabitForm() {
       return;
     }
 
-    // Step 3: update state manually
     const newHabit = {
       id: habit.id,
       name: habit.name,
       activeDays: habit.active_days,
-      history: {
-        [isoDate]: false,
-      },
+      history: { [isoDate]: false },
       completedToday: false,
     };
 
     setHabits([...habits, newHabit]);
     setInputValue("");
   }
+
   function handleSubmit(e) {
     e.preventDefault();
     addHabit(inputValue);
