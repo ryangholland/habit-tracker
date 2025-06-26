@@ -1,5 +1,5 @@
-import { toggleHabit, createNewHabit } from "./habitUtils";
-import { ensureTodayInHistory } from "./habitUtils";
+import { toggleHabit, createNewHabit } from "../utils/habitUtils";
+import { ensureTodayInHistory } from "../utils/habitUtils";
 
 test("toggles completedToday and updates history for the correct habit", () => {
   const habits = [

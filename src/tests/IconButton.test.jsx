@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import IconButton from "./common/IconButton";
+import IconButton from "../components/common/IconButton";
 import { FaCog } from "react-icons/fa";
 
 test("renders icon button with label and handles click", async () => {

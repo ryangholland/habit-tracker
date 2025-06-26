@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { useProgress } from "./useProgress";
+import { useProgress } from "../hooks/useProgress";
 
 test("calculates progress correctly", () => {
   const habits = [

@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Today from "./Today";
+import Today from "../pages/Today";
 import { HabitProvider } from "../context/HabitProvider";
 import { DeleteDialogProvider } from "../context/DeleteDialogProvider";
 
