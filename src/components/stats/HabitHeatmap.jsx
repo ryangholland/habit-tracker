@@ -1,11 +1,11 @@
-import { useHabits } from "../hooks/useHabits";
+import { useHabits } from "../../hooks/useHabits";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Tooltip } from "react-tooltip";
 import { subDays } from "date-fns";
-import { getHeatmapTooltipAttrs } from "../utils/tooltipUtils";
+import { getHeatmapTooltipAttrs } from "../../utils/tooltipUtils";
 import "react-calendar-heatmap/dist/styles.css";
 import "react-tooltip/dist/react-tooltip.css";
-import "../components/HabitHeatmap.css";
+import "../stats/HabitHeatmap.css";
 
 function transformHabitsToHeatmap(habits) {
   const dateMap = {};

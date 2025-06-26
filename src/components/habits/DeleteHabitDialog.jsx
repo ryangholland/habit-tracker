@@ -1,6 +1,6 @@
-import ConfirmationDialog from "./ConfirmationDialog";
-import { useDeleteDialog } from "../hooks/useDeleteDialog";
-import { useHabits } from "../hooks/useHabits";
+import ConfirmationDialog from "../common/ConfirmationDialog";
+import { useDeleteDialog } from "../../hooks/useDeleteDialog";
+import { useHabits } from "../../hooks/useHabits";
 
 function DeleteHabitDialog() {
   const { habitToDelete, isOpen, closeDialog } = useDeleteDialog();

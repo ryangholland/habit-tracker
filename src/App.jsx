@@ -12,7 +12,7 @@ import Today from "./pages/Today";
 import Stats from "./pages/Stats";
 import Settings from "./pages/Settings";
 import Layout from "./layouts/Layout";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
   const { user } = useContext(AuthContext);

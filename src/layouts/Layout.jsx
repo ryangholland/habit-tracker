@@ -1,7 +1,7 @@
-import Header from "../components/Header";
-import Tabs from "../components/Tabs";
-import Footer from "../components/Footer";
-import DeleteHabitDialog from "../components/DeleteHabitDialog";
+import Header from "./Header";
+import Tabs from "./Tabs";
+import Footer from "./Footer";
+import DeleteHabitDialog from "../components/habits/DeleteHabitDialog";
 
 function Layout({ children }) {
   return (

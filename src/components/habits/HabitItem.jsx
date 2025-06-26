@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@headlessui/react";
 import { FaCog, FaTrash } from "react-icons/fa";
-import IconButton from "./IconButton";
-import { useDeleteDialog } from "../hooks/useDeleteDialog";
+import IconButton from "../common/IconButton";
+import { useDeleteDialog } from "../../hooks/useDeleteDialog";
 
 function HabitItem({ habit, toggleHabitStatus }) {
   const { id, name, completedToday } = habit;

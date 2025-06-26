@@ -1,10 +1,10 @@
-import { useHabits } from "../hooks/useHabits";
+import { useHabits } from "../../hooks/useHabits";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { getLast7Days } from "../utils/dateUtils";
+import { AuthContext } from "../../context/AuthContext";
+import { getLast7Days } from "../../utils/dateUtils";
 import { FaCheck } from "react-icons/fa";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 
 export default function EditPastDaysDialog({ isOpen, onClose }) {
   const { isGuest } = useContext(AuthContext);

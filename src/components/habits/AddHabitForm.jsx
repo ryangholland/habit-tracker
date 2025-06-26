@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { useHabits } from "../hooks/useHabits";
-import { useToday } from "../hooks/useToday";
-import { supabase } from "../supabaseClient";
-import { AuthContext } from "../context/AuthContext";
+import { useHabits } from "../../hooks/useHabits";
+import { useToday } from "../../hooks/useToday";
+import { supabase } from "../../supabaseClient";
+import { AuthContext } from "../../context/AuthContext";
 import { Input } from "@headlessui/react";
-import { createNewHabit } from "../utils/habitUtils";
+import { createNewHabit } from "../../utils/habitUtils";
 
 function AddHabitForm() {
   const { user, isGuest } = useContext(AuthContext);

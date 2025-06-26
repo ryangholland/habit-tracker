@@ -1,5 +1,5 @@
-import { useHabits } from "../hooks/useHabits";
-import { getLast7Days } from "../utils/dateUtils";
+import { useHabits } from "../../hooks/useHabits";
+import { getLast7Days } from "../../utils/dateUtils";
 import { FaCheck } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";

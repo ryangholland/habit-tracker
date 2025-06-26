@@ -5,7 +5,7 @@ import { useDeleteDialog } from "../hooks/useDeleteDialog";
 import { AuthContext } from "../context/AuthContext";
 import GeneralSettings from "../components/settings/GeneralSettings";
 import HabitSettings from "../components/settings/HabitSettings";
-import ConfirmationDialog from "../components/ConfirmationDialog";
+import ConfirmationDialog from "../components/common/ConfirmationDialog";
 
 function Settings() {
   const { habits, setHabits } = useHabits();

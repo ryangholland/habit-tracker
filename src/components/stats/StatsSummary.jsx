@@ -1,4 +1,4 @@
-import { useHabits } from "../hooks/useHabits";
+import { useHabits } from "../../hooks/useHabits";
 import { parseISO, isEqual, subDays, formatISO } from "date-fns";
 
 function calculateStreak(

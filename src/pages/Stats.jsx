@@ -1,6 +1,6 @@
-import HabitHeatmap from "../components/HabitHeatmap";
-import WeeklyHabitTable from "../components/WeeklyHabitTable";
-import StatsSummary from "../components/StatsSummary";
+import HabitHeatmap from "../components/stats/HabitHeatmap";
+import WeeklyHabitTable from "../components/stats/WeeklyHabitTable";
+import StatsSummary from "../components/stats/StatsSummary";
 
 function Stats() {
   return (
