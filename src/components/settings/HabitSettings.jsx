@@ -1,19 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { FaChevronDown } from "react-icons/fa";
-import { supabase } from "../../supabaseClient";
-import HabitNameEditor from "./HabitNameEditor";
-import ActiveDaySelector from "./ActiveDaySelector";
 import HabitSettingsItem from "./HabitSettingsItem";
-
-const isEveryDay = (activeDays = []) =>
-  activeDays.length === 7 &&
-  [0, 1, 2, 3, 4, 5, 6].every((d) => activeDays.includes(d));
 
 function HabitSettings({
   habits,
@@ -23,10 +10,7 @@ function HabitSettings({
   initiallyExpandedId,
 }) {
   const { isGuest } = useContext(AuthContext);
-  const [editingHabitId, setEditingHabitId] = useState(null);
-  const [editedName, setEditedName] = useState("");
-  const [everyDayEnabled, setEveryDayEnabled] = useState({});
-  const [expandedHabitId, setExpandedHabitId] = useState(initiallyExpandedId);
+  const expandedHabitId = useState(initiallyExpandedId)[0];
   const habitRefs = useRef({});
 
   function saveToLocalStorage(updatedHabits) {
@@ -34,16 +18,6 @@ function HabitSettings({
       localStorage.setItem("guest_habits", JSON.stringify(updatedHabits));
     }
   }
-
-  const daysOfWeek = [
-    { label: "Sun", index: 0 },
-    { label: "Mon", index: 1 },
-    { label: "Tue", index: 2 },
-    { label: "Wed", index: 3 },
-    { label: "Thu", index: 4 },
-    { label: "Fri", index: 5 },
-    { label: "Sat", index: 6 },
-  ];
 
   useEffect(() => {
     if (initiallyExpandedId && habitRefs.current[initiallyExpandedId]) {
