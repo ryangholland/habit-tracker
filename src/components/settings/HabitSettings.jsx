@@ -8,6 +8,7 @@ import {
 import { FaChevronDown } from "react-icons/fa";
 import { supabase } from "../../supabaseClient";
 import HabitNameEditor from "./HabitNameEditor";
+import ActiveDaySelector from "./ActiveDaySelector";
 
 const isEveryDay = (activeDays = []) =>
   activeDays.length === 7 &&
@@ -82,7 +83,6 @@ function HabitSettings({
                     </DisclosureButton>
 
                     <DisclosurePanel className="divide-y divide-gray-200 dark:divide-gray-700 px-4 py-4 bg-white dark:bg-gray-800 rounded-b-md border-t border-gray-300 dark:border-gray-600">
-                      {/* Habit Name */}
                       <div className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                           <label className="block font-medium text-gray-900 dark:text-white text-sm mb-1">
@@ -102,128 +102,13 @@ function HabitSettings({
                         </div>
                       </div>
 
-                      {/* Active Days */}
-                      <div className="py-4 space-y-2">
-                        <label className="block font-medium text-gray-900 dark:text-white text-sm">
-                          Active Days
-                        </label>
-
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={checkboxChecked}
-                            onChange={async () => {
-                              const enable = !checkboxChecked;
-                              const newDays = enable
-                                ? [0, 1, 2, 3, 4, 5, 6]
-                                : [];
-
-                              if (isGuest) {
-                                const updated = habits.map((h) =>
-                                  h.id === habit.id
-                                    ? { ...h, activeDays: newDays }
-                                    : h
-                                );
-                                setEveryDayEnabled((prev) => ({
-                                  ...prev,
-                                  [habit.id]: enable,
-                                }));
-                                setHabits(updated);
-                                saveToLocalStorage(updated);
-                                return;
-                              }
-
-                              const { error } = await supabase
-                                .from("habits")
-                                .update({ active_days: newDays })
-                                .eq("id", habit.id);
-
-                              if (!error) {
-                                const updated = habits.map((h) =>
-                                  h.id === habit.id
-                                    ? { ...h, activeDays: newDays }
-                                    : h
-                                );
-                                setEveryDayEnabled((prev) => ({
-                                  ...prev,
-                                  [habit.id]: enable,
-                                }));
-                                setHabits(updated);
-                              }
-                            }}
-                            className="w-4 h-4 cursor-pointer"
-                            id={`everyday-${habit.id}`}
-                          />
-                          <label
-                            htmlFor={`everyday-${habit.id}`}
-                            className="text-sm text-black dark:text-white cursor-pointer"
-                            title="Check to enable all days. Uncheck to edit days manually."
-                          >
-                            Every Day
-                          </label>
-                        </div>
-
-                        <div className="flex gap-2 flex-wrap mt-2">
-                          {daysOfWeek.map(({ label, index }) => {
-                            const isActive = habit.activeDays?.includes(index);
-                            const newDays = isActive
-                              ? habit.activeDays.filter((d) => d !== index)
-                              : [...habit.activeDays, index];
-
-                            return (
-                              <button
-                                key={index}
-                                onClick={async () => {
-                                  if (isGuest) {
-                                    const updated = habits.map((h) =>
-                                      h.id === habit.id
-                                        ? { ...h, activeDays: newDays }
-                                        : h
-                                    );
-                                    setHabits(updated);
-                                    setEveryDayEnabled((prev) => ({
-                                      ...prev,
-                                      [habit.id]: false,
-                                    }));
-                                    saveToLocalStorage(updated);
-                                    return;
-                                  }
-
-                                  const { error } = await supabase
-                                    .from("habits")
-                                    .update({ active_days: newDays })
-                                    .eq("id", habit.id);
-
-                                  if (!error) {
-                                    const updated = habits.map((h) =>
-                                      h.id === habit.id
-                                        ? { ...h, activeDays: newDays }
-                                        : h
-                                    );
-                                    setHabits(updated);
-                                    setEveryDayEnabled((prev) => ({
-                                      ...prev,
-                                      [habit.id]: false,
-                                    }));
-                                  }
-                                }}
-                                disabled={isLocked}
-                                className={`px-2 py-1 rounded-md text-sm border ${
-                                  isActive
-                                    ? "bg-blue-600 text-white border-blue-700"
-                                    : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white border-gray-400 dark:border-gray-600"
-                                } ${
-                                  isLocked
-                                    ? "opacity-60 cursor-not-allowed"
-                                    : "cursor-pointer"
-                                }`}
-                              >
-                                {label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
+                      <ActiveDaySelector
+                        habit={habit}
+                        isGuest={isGuest}
+                        habits={habits}
+                        setHabits={setHabits}
+                        saveToLocalStorage={saveToLocalStorage}
+                      />
 
                       {/* Clear/Delete */}
                       <div className="py-4 flex flex-wrap gap-3">
