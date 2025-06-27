@@ -63,6 +63,7 @@ function HabitSettings({
         {habits.map((habit) => (
           <HabitSettingsItem
             key={habit.id}
+            ref={(el) => (habitRefs.current[habit.id] = el)}
             habit={habit}
             isGuest={isGuest}
             habits={habits}
