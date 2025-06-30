@@ -12,6 +12,7 @@ import QuoteCard from "../components/habits/QuoteCard";
 import { supabase } from "../supabaseClient";
 import { toggleHabit } from "../utils/habitUtils";
 import { AuthContext } from "../context/AuthContext";
+import { useToggleHabitStatus } from "../hooks/useToggleHabitStatus";
 
 function Today() {
   const { habits, setHabits } = useHabits();
@@ -21,6 +22,12 @@ function Today() {
   const { showQuote } = useContext(SettingsContext);
   const { isGuest } = useContext(AuthContext);
   const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const toggleHabitStatus = useToggleHabitStatus({
+    habits,
+    setHabits,
+    isGuest,
+  });
 
   const visibleHabits = habits.filter((habit) =>
     habit.activeDays?.includes(weekday)
@@ -32,73 +39,6 @@ function Today() {
     "name-desc": "Name (Z–A)",
     "incomplete-first": "Incomplete First",
     "complete-first": "Complete First",
-  };
-
-  const toggleHabitStatus = async (id) => {
-    if (isGuest) {
-      const updated = toggleHabit(habits, id, isoDate);
-      setHabits(updated);
-      localStorage.setItem("guest_habits", JSON.stringify(updated));
-      return;
-    }
-
-    const habit = habits.find((h) => h.id === id);
-    if (!habit) return;
-
-    const current = habit.history?.[isoDate] === true;
-    const newCompleted = !current;
-
-    // Check if history row exists
-    const { data: existing, error: fetchError } = await supabase
-      .from("habit_history")
-      .select("id")
-      .eq("habit_id", id)
-      .eq("date", isoDate)
-      .single();
-
-    if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Failed to check history:", fetchError.message);
-      return;
-    }
-
-    if (existing) {
-      // Update
-      const { error } = await supabase
-        .from("habit_history")
-        .update({ completed: newCompleted })
-        .eq("id", existing.id);
-      if (error) {
-        console.error("Failed to update habit history:", error.message);
-        return;
-      }
-    } else {
-      // Insert
-      const { error } = await supabase.from("habit_history").insert({
-        habit_id: id,
-        date: isoDate,
-        completed: newCompleted,
-      });
-      if (error) {
-        console.error("Failed to insert habit history:", error.message);
-        return;
-      }
-    }
-
-    // Update local state
-    setHabits((prev) =>
-      prev.map((h) =>
-        h.id === id
-          ? {
-              ...h,
-              completedToday: newCompleted,
-              history: {
-                ...h.history,
-                [isoDate]: newCompleted,
-              },
-            }
-          : h
-      )
-    );
   };
 
   return (
