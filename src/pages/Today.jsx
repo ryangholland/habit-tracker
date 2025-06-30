@@ -13,6 +13,7 @@ import { supabase } from "../supabaseClient";
 import { toggleHabit } from "../utils/habitUtils";
 import { AuthContext } from "../context/AuthContext";
 import { useToggleHabitStatus } from "../hooks/useToggleHabitStatus";
+import HabitSortLabel from "../components/habits/HabitSortLabel";
 
 function Today() {
   const { habits, setHabits } = useHabits();
@@ -33,14 +34,6 @@ function Today() {
     habit.activeDays?.includes(weekday)
   );
 
-  const sortLabelMap = {
-    default: "Default",
-    "name-asc": "Name (A–Z)",
-    "name-desc": "Name (Z–A)",
-    "incomplete-first": "Incomplete First",
-    "complete-first": "Complete First",
-  };
-
   return (
     <>
       <h2 className="text-2xl text-black font-semibold dark:text-white">
@@ -53,11 +46,7 @@ function Today() {
         })}
       </h2>
       {showQuote && <QuoteCard />}
-      {visibleHabits.length > 0 && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-2 text-right">
-          Sorted: {sortLabelMap[sortOrder]}
-        </p>
-      )}
+      {visibleHabits.length > 0 && <HabitSortLabel sortOrder={sortOrder} />}
       {visibleHabits.length > 0 && (
         <HabitList habits={visibleHabits} onToggle={toggleHabitStatus} />
       )}
