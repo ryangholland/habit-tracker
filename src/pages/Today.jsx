@@ -1,18 +1,18 @@
+import { useContext, useState } from "react";
+
+import { SettingsContext } from "../context/SettingsContext";
+import { AuthContext } from "../context/AuthContext";
+
 import { useHabits } from "../hooks/useHabits";
 import { useToday } from "../hooks/useToday";
 import { useProgress } from "../hooks/useProgress";
-import { useContext, useState } from "react";
-import { SettingsContext } from "../context/SettingsContext";
-import { getQuoteOfTheDay } from "../utils/quotes";
+import { useToggleHabitStatus } from "../hooks/useToggleHabitStatus";
+
 import HabitList from "../components/habits/HabitList";
 import AddHabitForm from "../components/habits/AddHabitForm";
 import ProgressBar from "../components/common/ProgressBar";
 import EditPastDaysDialog from "../components/habits/EditPastDaysDialog";
 import QuoteCard from "../components/habits/QuoteCard";
-import { supabase } from "../supabaseClient";
-import { toggleHabit } from "../utils/habitUtils";
-import { AuthContext } from "../context/AuthContext";
-import { useToggleHabitStatus } from "../hooks/useToggleHabitStatus";
 import HabitSortLabel from "../components/habits/HabitSortLabel";
 
 function Today() {
