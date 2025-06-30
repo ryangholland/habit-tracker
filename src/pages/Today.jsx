@@ -8,6 +8,7 @@ import HabitList from "../components/habits/HabitList";
 import AddHabitForm from "../components/habits/AddHabitForm";
 import ProgressBar from "../components/common/ProgressBar";
 import EditPastDaysDialog from "../components/habits/EditPastDaysDialog";
+import QuoteCard from "../components/habits/QuoteCard";
 import { supabase } from "../supabaseClient";
 import { toggleHabit } from "../utils/habitUtils";
 import { AuthContext } from "../context/AuthContext";
@@ -111,13 +112,7 @@ function Today() {
           year: "numeric",
         })}
       </h2>
-      {showQuote && (
-        <div className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg p-2 border border-gray-300 dark:border-gray-600 shadow-sm mt-2">
-          <p className="italic text-base leading-relaxed before:content-['“'] after:content-['”']">
-            {getQuoteOfTheDay()}
-          </p>
-        </div>
-      )}
+      {showQuote && <QuoteCard />}
       {visibleHabits.length > 0 && (
         <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-2 text-right">
           Sorted: {sortLabelMap[sortOrder]}
