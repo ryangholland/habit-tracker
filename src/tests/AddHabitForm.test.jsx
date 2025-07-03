@@ -1,25 +1,8 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import AddHabitForm from "../components/habits/AddHabitForm";
-import { HabitProvider } from "../context/HabitProvider";
-import { SettingsProvider } from "../context/SettingsProvider";
-import { DeleteDialogProvider } from "../context/DeleteDialogProvider";
-import { AuthContext } from "../context/AuthContext";
+import { renderWithProviders } from "./utils/renderWithProviders";
 
 vi.mock("../supabaseClient");
-
-function renderWithProviders(isGuest = true, user = null) {
-  return render(
-    <AuthContext.Provider value={{ isGuest, user }}>
-      <SettingsProvider>
-        <HabitProvider>
-          <DeleteDialogProvider>
-            <AddHabitForm />
-          </DeleteDialogProvider>
-        </HabitProvider>
-      </SettingsProvider>
-    </AuthContext.Provider>
-  );
-}
 
 describe("AddHabitForm", () => {
   beforeEach(() => {
@@ -27,7 +10,7 @@ describe("AddHabitForm", () => {
   });
 
   test("adds a new habit in guest mode and updates localStorage", () => {
-    renderWithProviders(true);
+    renderWithProviders(<AddHabitForm />, { isGuest: true });
 
     const input = screen.getByPlaceholderText(/add a habit/i);
     fireEvent.change(input, { target: { value: "Read" } });
@@ -40,7 +23,10 @@ describe("AddHabitForm", () => {
   });
 
   test("adds a new habit in Supabase mode", async () => {
-    renderWithProviders(false, { id: "user-1" });
+    renderWithProviders(<AddHabitForm />, {
+      isGuest: false,
+      user: { id: "user-1" },
+    });
 
     const input = await screen.findByPlaceholderText(/add a habit/i);
     fireEvent.change(input, { target: { value: "Workout" } });
@@ -52,7 +38,7 @@ describe("AddHabitForm", () => {
   });
 
   test("does not add habit if input is empty", () => {
-    renderWithProviders(true);
+    renderWithProviders(<AddHabitForm />, { isGuest: true });
 
     const input = screen.getByPlaceholderText(/add a habit/i);
 
@@ -64,6 +50,6 @@ describe("AddHabitForm", () => {
 
     const after = JSON.parse(localStorage.getItem("guest_habits"))?.length || 0;
 
-    expect(after).toBe(before); 
+    expect(after).toBe(before);
   });
 });
