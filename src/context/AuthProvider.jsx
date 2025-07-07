@@ -4,54 +4,62 @@ import { supabase } from "../supabaseClient";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+
   const [isGuest, setIsGuest] = useState(() => {
     return localStorage.getItem("isGuest") === "true";
   });
 
   useEffect(() => {
-    localStorage.setItem("isGuest", isGuest);
-  }, [isGuest]);
+    if (user) {
+      setIsGuest(false);
+      localStorage.removeItem("isGuest");
+    } else {
+      localStorage.setItem("isGuest", isGuest);
+    }
+  }, [user, isGuest]);
 
-  useEffect(() => {
-    // Check session on load
-    supabase.auth.getSession().then(async ({ data }) => {
-      const baseUser = data?.session?.user;
+  // Shared function to hydrate user
+  async function handleSession(session) {
+    const baseUser = session?.user;
 
-      if (baseUser) {
-        const { data: profile } = await supabase
+    if (baseUser) {
+      try {
+        const { data: profile, error } = await supabase
           .from("profiles")
           .select("username")
           .eq("id", baseUser.id)
           .single();
 
+        if (error) {
+          console.error("Failed to fetch profile:", error.message);
+        }
+
         setUser({
           ...baseUser,
           username: profile?.username || null,
         });
-      } else {
+
+        setIsGuest(false);
+        localStorage.removeItem("isGuest");
+      } catch (err) {
+        console.error("Error handling session:", err);
         setUser(null);
       }
+    } else {
+      setUser(null);
+    }
+  }
+
+  useEffect(() => {
+    // Load current session on mount
+    supabase.auth.getSession().then(({ data }) => {
+      handleSession(data?.session);
     });
 
-    // Listen to auth changes
+    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        const baseUser = session?.user;
-
-        if (baseUser) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("username")
-            .eq("id", baseUser.id)
-            .single();
-
-          setUser({
-            ...baseUser,
-            username: profile?.username || null,
-          });
-        } else {
-          setUser(null);
-        }
+      (_event, session) => {
+        handleSession(session);
       }
     );
 
@@ -61,11 +69,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const register = async (username, email, password) => {
-    // Step 1: Create user in auth.users
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+      }
+    );
 
     if (signUpError) {
       alert(signUpError.message);
@@ -74,7 +83,6 @@ export function AuthProvider({ children }) {
 
     const userId = signUpData.user?.id;
 
-    // Step 2: Insert into profiles
     if (userId) {
       const { error: profileError } = await supabase.from("profiles").insert({
         id: userId,
@@ -95,52 +103,58 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (username, password) => {
-    // Step 1: Get user ID from profiles
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username", username)
-      .single();
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", username)
+        .single();
 
-    if (profileError) {
-      alert("Invalid username");
+      if (profileError) {
+        alert("Invalid username");
+        return false;
+      }
+
+      const userId = profile.id;
+
+      const { data: userRow, error: userError } = await supabase
+        .from("users")
+        .select("email")
+        .eq("id", userId)
+        .single();
+
+      if (userError) {
+        alert("Could not find associated email");
+        return false;
+      }
+
+      const email = userRow.email;
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        alert("Invalid password");
+        return false;
+      }
+
+      setIsGuest(false);
+      localStorage.removeItem("isGuest");
+
+      return true;
+    } catch (err) {
+      console.error("Login failed:", err);
       return false;
     }
-
-    const userId = profile.id;
-
-    // Step 2: Get email from users view
-    const { data: userRow, error: userError } = await supabase
-      .from("users") // Supabase view for auth.users
-      .select("email")
-      .eq("id", userId)
-      .single();
-
-    if (userError) {
-      alert("Could not find associated email");
-      return false;
-    }
-
-    const email = userRow.email;
-
-    // Step 3: Log in using email + password
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError) {
-      alert("Invalid password");
-      return false;
-    }
-
-    return true;
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
     setIsGuest(false);
+    localStorage.removeItem("isGuest");
   };
 
   return (
