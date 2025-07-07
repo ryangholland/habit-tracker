@@ -51,7 +51,8 @@ function Header() {
                     </div>
                   ) : (
                     <span>
-                      Hi, <span className="font-semibold">{user?.name}</span>
+                      Hi,{" "}
+                      <span className="font-semibold">{user?.username}</span>
                     </span>
                   )}
                 </div>
