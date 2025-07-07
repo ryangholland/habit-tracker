@@ -30,15 +30,46 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const login = async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
+  const login = async (username, password) => {
+    // Step 1: Look up the email from the username
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .single();
+
+    if (profileError) {
+      alert("Invalid username");
+      return false;
+    }
+
+    const userId = profile.id;
+
+    // Step 2: Get email from auth.users
+    const { data: userRow, error: userError } = await supabase
+      .from("users") // this is a Supabase *view* of auth.users
+      .select("email")
+      .eq("id", userId)
+      .single();
+
+    if (userError) {
+      alert("Could not find associated email");
+      return false;
+    }
+
+    const email = userRow.email;
+
+    // Step 3: Log in with email + password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) {
-      alert(error.message);
+
+    if (signInError) {
+      alert("Invalid password");
       return false;
     }
+
     return true;
   };
 
