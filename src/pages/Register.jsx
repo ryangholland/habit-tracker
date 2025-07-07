@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 function Register() {
   const { register } = useContext(AuthContext);
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
-      const success = register(username.trim(), password.trim());
+    if (username.trim() && email.trim() && password.trim()) {
+      const success = register(username.trim(), email.trim(), password.trim());
       if (success) navigate("/");
     }
   };
@@ -33,6 +34,13 @@ function Register() {
           placeholder="Choose a username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
+        />
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
         <input
