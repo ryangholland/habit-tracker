@@ -51,7 +51,7 @@ function Today() {
         <HabitList habits={visibleHabits} onToggle={toggleHabitStatus} />
       )}
       {visibleHabits.length === 0 && (
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-600 dark:text-gray-400 mt-6 mb-4 text-center">
           No habits added yet. Start by adding a habit below.
         </p>
       )}
