@@ -13,12 +13,11 @@ export function AuthProvider({ children }) {
   }, [isGuest]);
 
   useEffect(() => {
-    // Check for user on initial load
-    const session = supabase.auth.getSession().then(async ({ data }) => {
+    // Check session on load
+    supabase.auth.getSession().then(async ({ data }) => {
       const baseUser = data?.session?.user;
 
       if (baseUser) {
-        // Fetch the username from profiles
         const { data: profile } = await supabase
           .from("profiles")
           .select("username")
@@ -61,8 +60,42 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  const register = async (username, email, password) => {
+    // Step 1: Create user in auth.users
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (signUpError) {
+      alert(signUpError.message);
+      return false;
+    }
+
+    const userId = signUpData.user?.id;
+
+    // Step 2: Insert into profiles
+    if (userId) {
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: userId,
+        username,
+      });
+
+      if (profileError) {
+        if (profileError.code === "23505") {
+          alert("Username already taken.");
+        } else {
+          alert(profileError.message);
+        }
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const login = async (username, password) => {
-    // Step 1: Look up the email from the username
+    // Step 1: Get user ID from profiles
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("id")
@@ -76,9 +109,9 @@ export function AuthProvider({ children }) {
 
     const userId = profile.id;
 
-    // Step 2: Get email from auth.users
+    // Step 2: Get email from users view
     const { data: userRow, error: userError } = await supabase
-      .from("users") // this is a Supabase *view* of auth.users
+      .from("users") // Supabase view for auth.users
       .select("email")
       .eq("id", userId)
       .single();
@@ -90,7 +123,7 @@ export function AuthProvider({ children }) {
 
     const email = userRow.email;
 
-    // Step 3: Log in with email + password
+    // Step 3: Log in using email + password
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -101,18 +134,6 @@ export function AuthProvider({ children }) {
       return false;
     }
 
-    return true;
-  };
-
-  const register = async (email, password) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) {
-      alert(error.message);
-      return false;
-    }
     return true;
   };
 
