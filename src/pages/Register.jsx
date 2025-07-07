@@ -63,6 +63,16 @@ function Register() {
         >
           Already have an account? Log in
         </button>
+        <button
+          type="button"
+          onClick={() => {
+            setIsGuest(true);
+            navigate("/");
+          }}
+          className="w-full text-sm text-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
+        >
+          Continue as Guest
+        </button>
       </form>
     </div>
   );
