@@ -2,7 +2,7 @@ import { supabase } from "../supabaseClient";
 import { toggleHabit } from "../utils/habitUtils";
 
 export function useToggleHabitStatus({ habits, setHabits, isGuest }) {
-  return async function toggleHabitStatus(id, isoDate) {
+  return async function toggleHabitStatus(id, isoDate = new Date().toISOString().slice(0, 10)) {
     const habit = habits.find((h) => h.id === id);
     if (!habit) return;
 
