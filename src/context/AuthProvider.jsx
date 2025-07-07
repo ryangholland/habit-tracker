@@ -14,14 +14,45 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Check for user on initial load
-    const session = supabase.auth.getSession().then(({ data }) => {
-      setUser(data?.session?.user || null);
+    const session = supabase.auth.getSession().then(async ({ data }) => {
+      const baseUser = data?.session?.user;
+
+      if (baseUser) {
+        // Fetch the username from profiles
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", baseUser.id)
+          .single();
+
+        setUser({
+          ...baseUser,
+          username: profile?.username || null,
+        });
+      } else {
+        setUser(null);
+      }
     });
 
     // Listen to auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null);
+      async (_event, session) => {
+        const baseUser = session?.user;
+
+        if (baseUser) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("username")
+            .eq("id", baseUser.id)
+            .single();
+
+          setUser({
+            ...baseUser,
+            username: profile?.username || null,
+          });
+        } else {
+          setUser(null);
+        }
       }
     );
 
