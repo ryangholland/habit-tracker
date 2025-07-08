@@ -1,19 +1,38 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa";
 
 function Register() {
   const { register, setIsGuest } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.trim() && email.trim() && password.trim()) {
-      const success = register(username.trim(), email.trim(), password.trim());
-      if (success) navigate("/");
+
+    if (!username.trim() || !email.trim() || !password.trim()) return;
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    const result = await register(
+      username.trim(),
+      email.trim(),
+      password.trim()
+    );
+
+    await new Promise((res) => setTimeout(res, 250));
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/");
+    } else {
+      setErrorMessage(result.message || "Registration failed");
     }
   };
 
@@ -50,11 +69,24 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
+        {errorMessage && (
+          <div className="text-red-600 text-sm font-medium text-center">
+            {errorMessage}
+          </div>
+        )}
         <button
           type="submit"
-          className="w-full px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white"
+          disabled={isLoading}
+          className="w-full px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
         >
-          Register
+          {isLoading ? (
+            <>
+              <FaSpinner className="animate-spin h-4 w-4" />
+              Registering...
+            </>
+          ) : (
+            "Register"
+          )}
         </button>
         <button
           type="button"

@@ -69,37 +69,38 @@ export function AuthProvider({ children }) {
   }, []);
 
   const register = async (username, email, password) => {
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
-      {
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-      }
-    );
-
-    if (signUpError) {
-      alert(signUpError.message);
-      return false;
-    }
-
-    const userId = signUpData.user?.id;
-
-    if (userId) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: userId,
-        username,
       });
-
-      if (profileError) {
-        if (profileError.code === "23505") {
-          alert("Username already taken.");
-        } else {
-          alert(profileError.message);
-        }
-        return false;
+  
+      if (signUpError) {
+        return { success: false, message: signUpError.message };
       }
+  
+      const userId = signUpData.user?.id;
+  
+      if (userId) {
+        const { error: profileError } = await supabase.from("profiles").insert({
+          id: userId,
+          username,
+        });
+  
+        if (profileError) {
+          if (profileError.code === "23505") {
+            return { success: false, message: "Username already taken." };
+          } else {
+            return { success: false, message: profileError.message };
+          }
+        }
+      }
+  
+      return { success: true };
+    } catch (err) {
+      console.error("Register failed:", err);
+      return { success: false, message: "Unexpected error. Please try again." };
     }
-
-    return true;
   };
 
   const login = async (username, password) => {
