@@ -104,49 +104,56 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     try {
+      // Step 1: Find user by username
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id")
         .eq("username", username)
         .single();
-
+  
       if (profileError) {
-        alert("Invalid username");
-        return false;
+        return { success: false, message: "Username not found." };
       }
-
+  
       const userId = profile.id;
-
+  
+      // Step 2: Get email tied to that user
       const { data: userRow, error: userError } = await supabase
         .from("users")
         .select("email")
         .eq("id", userId)
         .single();
-
+  
       if (userError) {
-        alert("Could not find associated email");
-        return false;
+        return {
+          success: false,
+          message: "Something went wrong. Please try again later.",
+        };
       }
-
+  
       const email = userRow.email;
-
+  
+      // Step 3: Attempt sign-in with email + password
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
+  
       if (signInError) {
-        alert("Invalid password");
-        return false;
+        return { success: false, message: "Incorrect password." };
       }
-
+  
+      // Step 4: Success — clear guest mode
       setIsGuest(false);
       localStorage.removeItem("isGuest");
-
-      return true;
+  
+      return { success: true };
     } catch (err) {
       console.error("Login failed:", err);
-      return false;
+      return {
+        success: false,
+        message: "Unexpected error. Please try again.",
+      };
     }
   };
 
