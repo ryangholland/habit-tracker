@@ -1,18 +1,34 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa";
 
 function Login() {
   const { login, setIsGuest } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
-      const success = login(username.trim(), password.trim());
-      if (success) navigate("/");
+
+    if (!username.trim() || !password.trim()) return;
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    const result = await login(username.trim(), password.trim());
+
+    await new Promise((res) => setTimeout(res, 250));
+
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/");
+    } else {
+      setErrorMessage(result.message || "Login failed");
     }
   };
 
@@ -30,6 +46,7 @@ function Login() {
         </h1>
         <input
           type="text"
+          disabled={isLoading}
           placeholder="Enter your username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -37,16 +54,30 @@ function Login() {
         />
         <input
           type="password"
+          disabled={isLoading}
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
+        {errorMessage && (
+          <div className="text-red-600 text-sm font-medium text-center">
+            {errorMessage}
+          </div>
+        )}
         <button
           type="submit"
-          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+          disabled={isLoading}
+          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
         >
-          Log In
+          {isLoading ? (
+            <>
+              <FaSpinner className="animate-spin h-4 w-4" />
+              Logging in...
+            </>
+          ) : (
+            "Log In"
+          )}
         </button>
         <button
           type="button"
