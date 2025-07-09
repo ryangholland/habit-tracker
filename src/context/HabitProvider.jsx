@@ -117,7 +117,7 @@ export function HabitProvider({ children }) {
       localStorage.setItem("guest_habits", JSON.stringify(updated));
       return;
     }
-    
+
     const { error } = await supabase.from("habits").delete().eq("id", id);
 
     if (error) {
@@ -130,7 +130,11 @@ export function HabitProvider({ children }) {
 
   return (
     <HabitContext.Provider value={{ habits, setHabits, deleteHabit }}>
-      {!loading && children}
+      {loading ? (
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 text-black dark:text-white"></div>
+      ) : (
+        children
+      )}
     </HabitContext.Provider>
   );
 }

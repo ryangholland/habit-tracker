@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const [isGuest, setIsGuest] = useState(() => {
     return localStorage.getItem("isGuest") === "true";
@@ -51,9 +52,11 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    let initialLoad = true;
+    
     // Load current session on mount
     supabase.auth.getSession().then(({ data }) => {
-      handleSession(data?.session);
+      handleSession(data?.session).finally(() => setAuthLoading(false));
     });
 
     // Listen for auth changes
@@ -70,23 +73,24 @@ export function AuthProvider({ children }) {
 
   const register = async (username, email, password) => {
     try {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-  
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email,
+          password,
+        });
+
       if (signUpError) {
         return { success: false, message: signUpError.message };
       }
-  
+
       const userId = signUpData.user?.id;
-  
+
       if (userId) {
         const { error: profileError } = await supabase.from("profiles").insert({
           id: userId,
           username,
         });
-  
+
         if (profileError) {
           if (profileError.code === "23505") {
             return { success: false, message: "Username already taken." };
@@ -95,7 +99,7 @@ export function AuthProvider({ children }) {
           }
         }
       }
-  
+
       return { success: true };
     } catch (err) {
       console.error("Register failed:", err);
@@ -111,43 +115,43 @@ export function AuthProvider({ children }) {
         .select("id")
         .eq("username", username)
         .single();
-  
+
       if (profileError) {
         return { success: false, message: "Username not found." };
       }
-  
+
       const userId = profile.id;
-  
+
       // Step 2: Get email tied to that user
       const { data: userRow, error: userError } = await supabase
         .from("users")
         .select("email")
         .eq("id", userId)
         .single();
-  
+
       if (userError) {
         return {
           success: false,
           message: "Something went wrong. Please try again later.",
         };
       }
-  
+
       const email = userRow.email;
-  
+
       // Step 3: Attempt sign-in with email + password
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-  
+
       if (signInError) {
         return { success: false, message: "Incorrect password." };
       }
-  
+
       // Step 4: Success — clear guest mode
       setIsGuest(false);
       localStorage.removeItem("isGuest");
-  
+
       return { success: true };
     } catch (err) {
       console.error("Login failed:", err);
@@ -167,7 +171,15 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, isGuest, setIsGuest }}
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        isGuest,
+        setIsGuest,
+        authLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>

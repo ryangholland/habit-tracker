@@ -18,7 +18,11 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
-    document.documentElement.classList.toggle("dark", darkMode);
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [darkMode]);
 
   useEffect(() => {
