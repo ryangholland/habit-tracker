@@ -3,6 +3,7 @@ export function useYesterday() {
   yesterday.setDate(yesterday.getDate() - 1);
 
   const formatted = yesterday.toLocaleDateString("en-US", {
+    weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",

@@ -38,7 +38,7 @@ function Yesterday() {
   return (
     <>
       <h2 className="text-2xl text-black font-semibold dark:text-white">
-        Yesterday, {formatted}
+        {formatted}
       </h2>
 
       {showQuote && <QuoteCard quote={getQuoteOfTheDay(new Date(isoDate))} />}
