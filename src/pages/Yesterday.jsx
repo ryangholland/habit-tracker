@@ -48,6 +48,7 @@ function Yesterday() {
         <HabitList
           habits={visibleHabits}
           onToggle={(id) => toggleHabitStatus(id, isoDate)}
+          isoDate={isoDate}
         />
       )}
 

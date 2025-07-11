@@ -4,19 +4,23 @@ import { FaCog, FaTrash } from "react-icons/fa";
 import IconButton from "../common/IconButton";
 import { useDeleteDialog } from "../../hooks/useDeleteDialog";
 
-function HabitItem({ habit, toggleHabitStatus }) {
-  const { id, name, completedToday } = habit;
+function HabitItem({ habit, toggleHabitStatus, isoDate = null }) {
+  const { id, name, history } = habit;
   const { openDeleteDialog } = useDeleteDialog();
   const navigate = useNavigate();
 
+  // Determine which date we're showing (default: today)
+  const dateToUse = isoDate || new Date().toISOString().slice(0, 10);
+  const isChecked = history?.[dateToUse] === true;
+
   const handleItemClick = (e) => {
     if (e.target.closest(".icon-container")) return;
-    toggleHabitStatus(id);
+    toggleHabitStatus(id, dateToUse);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
-      toggleHabitStatus(id);
+      toggleHabitStatus(id, dateToUse);
     }
   };
 
@@ -25,17 +29,17 @@ function HabitItem({ habit, toggleHabitStatus }) {
       onClick={handleItemClick}
       onKeyDown={handleKeyDown}
       role="checkbox"
-      aria-checked={completedToday}
+      aria-checked={isChecked}
       tabIndex={0}
       className="group flex items-center justify-between space-x-2 gap-2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 
-    hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition duration-200 md:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-black dark:focus-visible:outline-white"
+      hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition duration-200 md:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-black dark:focus-visible:outline-white"
     >
       <div className="flex items-center gap-2">
         <Checkbox
-          checked={completedToday}
-          aria-checked={completedToday}
+          checked={isChecked}
+          aria-checked={isChecked}
           tabIndex={-1}
-          title={completedToday ? "Mark as incomplete" : "Mark as complete"}
+          title={isChecked ? "Mark as incomplete" : "Mark as complete"}
           className={`group block size-6 rounded border 
             border-gray-400 dark:border-gray-600
             bg-white dark:bg-gray-800
@@ -58,9 +62,7 @@ function HabitItem({ habit, toggleHabitStatus }) {
         </Checkbox>
         <span
           className={`px-1 text-black dark:text-white ${
-            completedToday
-              ? "line-through text-gray-500 dark:text-gray-400"
-              : ""
+            isChecked ? "line-through text-gray-500 dark:text-gray-400" : ""
           }`}
         >
           {name}

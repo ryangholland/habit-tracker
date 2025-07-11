@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { SettingsContext } from "../../context/SettingsContext";
 import HabitItem from "./HabitItem";
 
-function HabitList({ habits, onToggle }) {
+function HabitList({ habits, onToggle, isoDate = null }) {
   const { sortOrder } = useContext(SettingsContext);
 
   const sortedHabits = [...habits].sort((a, b) => {
@@ -23,7 +23,7 @@ function HabitList({ habits, onToggle }) {
   return (
     <div className="mb-2 md:mb-4 flex flex-col gap-4">
       {sortedHabits.map((habit) => (
-        <HabitItem key={habit.id} habit={habit} toggleHabitStatus={onToggle} />
+        <HabitItem key={habit.id} habit={habit} toggleHabitStatus={onToggle} isoDate={isoDate} />
       ))}
     </div>
   );

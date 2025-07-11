@@ -54,18 +54,23 @@ export function useToggleHabitStatus({ habits, setHabits, isGuest }) {
 
     // Update local state
     setHabits((prev) =>
-      prev.map((h) =>
-        h.id === id
-          ? {
-              ...h,
-              completedToday: newCompleted,
-              history: {
-                ...h.history,
-                [isoDate]: newCompleted,
-              },
-            }
-          : h
-      )
+      prev.map((h) => {
+        if (h.id !== id) return h;
+    
+        const updatedHistory = {
+          ...h.history,
+          [isoDate]: newCompleted,
+        };
+    
+        const todayISO = new Date().toISOString().slice(0, 10);
+    
+        return {
+          ...h,
+          history: updatedHistory,
+          completedToday:
+            isoDate === todayISO ? newCompleted : h.completedToday,
+        };
+      })
     );
   };
 }
