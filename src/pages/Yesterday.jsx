@@ -19,7 +19,7 @@ import { getQuoteOfTheDay } from "../utils/quotes";
 function Yesterday() {
   const { habits, setHabits } = useHabits();
   const { weekday, isoDate, formatted } = useYesterday();
-  const { progress } = useProgress(habits);
+
   const { sortOrder, showQuote } = useContext(SettingsContext);
   const { isGuest } = useContext(AuthContext);
 
@@ -34,6 +34,8 @@ function Yesterday() {
   const visibleHabits = habits.filter((habit) =>
     habit.activeDays?.includes(weekday)
   );
+
+  const { progress } = useProgress(visibleHabits, isoDate);
 
   return (
     <>
