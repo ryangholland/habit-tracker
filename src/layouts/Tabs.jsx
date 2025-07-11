@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 function getTabClass(isActive) {
   const base =
-    "pb-2 border-b-2 text-2xl hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white";
+    "pb-2 border-b-2 text-lg sm:text-xl md:text-2xl hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white";
 
   const active = isActive
     ? "text-black dark:text-white border-black dark:border-white"
