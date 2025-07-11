@@ -37,6 +37,16 @@ function App() {
       ),
     },
     {
+      path: "/yesterday",
+      element: (
+        <ProtectedRoute>
+          <Layout>
+            <Yesterday />
+          </Layout>
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: "/settings",
       element: (
         <ProtectedRoute>
