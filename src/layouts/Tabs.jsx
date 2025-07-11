@@ -23,6 +23,13 @@ function Tabs() {
         </NavLink>
 
         <NavLink
+          to="/yesterday"
+          className={({ isActive }) => getTabClass(isActive)}
+        >
+          Yesterday
+        </NavLink>
+
+        <NavLink
           to="/stats"
           className={({ isActive }) => getTabClass(isActive)}
         >

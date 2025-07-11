@@ -9,6 +9,7 @@ import { AuthContext } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Today from "./pages/Today";
+import Yesterday from "./pages/Yesterday";
 import Stats from "./pages/Stats";
 import Settings from "./pages/Settings";
 import Layout from "./layouts/Layout";
