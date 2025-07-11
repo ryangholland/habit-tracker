@@ -2,6 +2,8 @@ import { renderHook } from "@testing-library/react";
 import { useProgress } from "../hooks/useProgress";
 
 describe("useProgress", () => {
+  const today = new Date().toISOString().slice(0, 10);
+
   test("returns 0 progress when no habits", () => {
     const { result } = renderHook(() => useProgress([]));
     expect(result.current).toEqual({ completed: 0, total: 0, progress: 0 });
@@ -9,9 +11,9 @@ describe("useProgress", () => {
 
   test("calculates correct progress values", () => {
     const habits = [
-      { completedToday: true },
-      { completedToday: false },
-      { completedToday: true },
+      { history: { [today]: true } },
+      { history: { [today]: false } },
+      { history: { [today]: true } },
     ];
 
     const { result } = renderHook(() => useProgress(habits));
@@ -24,7 +26,10 @@ describe("useProgress", () => {
   });
 
   test("rounds down when needed", () => {
-    const habits = [{ completedToday: true }, { completedToday: false }];
+    const habits = [
+      { history: { [today]: true } },
+      { history: { [today]: false } },
+    ];
 
     const { result } = renderHook(() => useProgress(habits));
 

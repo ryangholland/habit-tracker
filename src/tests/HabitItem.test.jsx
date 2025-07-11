@@ -20,10 +20,13 @@ vi.mock("../hooks/useDeleteDialog", () => ({
 
 describe("HabitItem", () => {
   const toggleHabitStatus = vi.fn();
+  const today = new Date().toISOString().slice(0, 10);
+
   const habit = {
     id: "abc123",
     name: "Stretch",
     completedToday: false,
+    history: { [today]: false },
   };
 
   const openDeleteDialog = vi.fn();
@@ -52,7 +55,7 @@ describe("HabitItem", () => {
     const wrapperCheckbox = screen.getByText("Stretch").closest('[role="checkbox"]');
     fireEvent.click(wrapperCheckbox);
 
-    expect(toggleHabitStatus).toHaveBeenCalledWith("abc123");
+    expect(toggleHabitStatus).toHaveBeenCalledWith("abc123", today);
   });
 
   test("calls toggleHabitStatus on spacebar key press", () => {
@@ -64,7 +67,7 @@ describe("HabitItem", () => {
     wrapperCheckbox.focus();
     fireEvent.keyDown(wrapperCheckbox, { key: " " });
 
-    expect(toggleHabitStatus).toHaveBeenCalledWith("abc123");
+    expect(toggleHabitStatus).toHaveBeenCalledWith("abc123", today);
   });
 
   test("does NOT call toggleHabitStatus when clicking Edit or Delete icons", () => {
