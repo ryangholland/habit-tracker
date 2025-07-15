@@ -6,10 +6,17 @@ function calculateStreak(
   activeDays = [0, 1, 2, 3, 4, 5, 6],
   upToDate = new Date()
 ) {
+  const todayISO = formatISO(upToDate, { representation: "date" });
+
+  // Only include dates in the past or today
   const filteredDates = Object.keys(history)
     .filter((dateStr) => {
       const dayIndex = new Date(dateStr + "T00:00:00").getDay();
-      return activeDays.includes(dayIndex);
+      return (
+        activeDays.includes(dayIndex) &&
+        dateStr <= todayISO && // include today only if it’s completed
+        history[dateStr] === true // only count completed days
+      );
     })
     .sort();
 
@@ -18,12 +25,6 @@ function calculateStreak(
   let prev = null;
 
   filteredDates.forEach((dateStr) => {
-    const completed = history[dateStr];
-    if (!completed) {
-      current = 0;
-      return;
-    }
-
     const date = parseISO(dateStr);
 
     if (prev && isEqual(date, subDays(prev, -1))) {
@@ -36,11 +37,14 @@ function calculateStreak(
     prev = date;
   });
 
-  // Check if the streak is still active today
-  const todayISO = formatISO(upToDate, { representation: "date" });
-  const todayDayIndex = upToDate.getDay();
-  const isTodayActive = activeDays.includes(todayDayIndex);
-  const active = isTodayActive && history[todayISO] ? current : 0;
+  // For active streak, use yesterday logic as before
+  const yesterday = subDays(upToDate, 1);
+  const yesterdayISO = formatISO(yesterday, { representation: "date" });
+  const yesterdayDayIndex = yesterday.getDay();
+  const isYesterdayActive = activeDays.includes(yesterdayDayIndex);
+
+  const active =
+    isYesterdayActive && history[yesterdayISO] === true ? current : 0;
 
   return { longest, active };
 }
