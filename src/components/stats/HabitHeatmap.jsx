@@ -1,7 +1,7 @@
 import { useHabits } from "../../hooks/useHabits";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Tooltip } from "react-tooltip";
-import { subDays } from "date-fns";
+import { subDays, formatISO } from "date-fns";
 import { getHeatmapTooltipAttrs } from "../../utils/tooltipUtils";
 import "react-calendar-heatmap/dist/styles.css";
 import "react-tooltip/dist/react-tooltip.css";
@@ -9,18 +9,27 @@ import "../stats/HabitHeatmap.css";
 
 function transformHabitsToHeatmap(habits) {
   const dateMap = {};
+  const today = new Date();
+
+  // Loop over the last 120 days
+  for (let i = 0; i <= 120; i++) {
+    const date = subDays(today, i);
+    const iso = formatISO(date, { representation: "date" });
+    dateMap[iso] = { completed: 0, total: 0 };
+  }
 
   habits.forEach((habit) => {
-    Object.entries(habit.history || {}).forEach(([date, done]) => {
-      const dayIndex = new Date(date + "T00:00:00").getDay();
-      if (!habit.activeDays?.includes(dayIndex)) return;
+    const { history = {}, activeDays = [0, 1, 2, 3, 4, 5, 6] } = habit;
 
-      if (!dateMap[date]) {
-        dateMap[date] = { completed: 0, total: 0 };
+    Object.keys(dateMap).forEach((isoDate) => {
+      const dayIndex = new Date(isoDate + "T00:00:00").getDay();
+      const isActive = activeDays.includes(dayIndex);
+      if (!isActive) return;
+
+      dateMap[isoDate].total += 1;
+      if (history[isoDate] === true) {
+        dateMap[isoDate].completed += 1;
       }
-
-      dateMap[date].total += 1;
-      if (done) dateMap[date].completed += 1;
     });
   });
 
