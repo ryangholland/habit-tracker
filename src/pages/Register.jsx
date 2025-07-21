@@ -2,6 +2,9 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 function Register() {
   const { register, setIsGuest } = useContext(AuthContext);
@@ -95,17 +98,33 @@ function Register() {
         >
           Already have an account? Log in
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setIsGuest(true);
-            navigate("/");
-          }}
-          className="w-full text-sm text-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
-        >
-          Continue as Guest
-        </button>
+
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setIsGuest(true);
+              navigate("/");
+            }}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
+          >
+            Continue as Guest
+          </button>
+
+          <FaInfoCircle
+            className="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-pointer"
+            data-tooltip-id="guest-tooltip"
+            data-tooltip-content="Guest mode loads example habits and stores data in your browser. Changes won't sync across devices or persist after clearing browser data."
+          />
+        </div>
       </form>
+
+      <Tooltip
+        id="guest-tooltip"
+        place="top"
+        className="max-w-xs break-words text-sm px-3 py-2"
+        style={{ whiteSpace: "normal" }}
+      />
     </div>
   );
 }
