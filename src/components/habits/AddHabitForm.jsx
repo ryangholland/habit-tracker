@@ -10,10 +10,16 @@ function AddHabitForm() {
   const { user, isGuest } = useContext(AuthContext);
   const { habits, setHabits } = useHabits();
   const [inputValue, setInputValue] = useState("");
+  const [error, setError] = useState("");
   const { isoDate } = useToday();
 
   async function addHabit(name) {
     if (!name.trim()) return;
+
+    if (habits.length >= 20) {
+      setError("You can only track up to 20 habits.");
+      return;
+    }
 
     if (isGuest) {
       const newHabit = createNewHabit(name, isoDate);
@@ -64,11 +70,13 @@ function AddHabitForm() {
     };
 
     setHabits([...habits, newHabit]);
+    setError("");
     setInputValue("");
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (habits.length >= 20) return;
     addHabit(inputValue);
   }
 
@@ -77,13 +85,19 @@ function AddHabitForm() {
       className="flex bg-gray-100 dark:bg-gray-800 rounded-md shadow-md"
       onSubmit={handleSubmit}
     >
+      {error && (
+        <p className="text-red-600 text-sm font-medium px-4 py-2">{error}</p>
+      )}
       <Input
         name="habit_name"
         type="text"
-        placeholder="Add a habit"
+        placeholder={
+          habits.length >= 20 ? "Habit limit reached (20/20)" : "Add a habit"
+        }
         className="w-full px-4 py-2 text-black dark:text-white bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        disabled={habits.length >= 20}
       />
     </form>
   );
