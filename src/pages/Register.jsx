@@ -13,6 +13,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,7 +34,11 @@ function Register() {
     setIsLoading(false);
 
     if (result.success) {
-      navigate("/");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        navigate("/");
+      }, 3000);
     } else {
       setErrorMessage(result.message || "Registration failed");
     }
@@ -125,6 +130,13 @@ function Register() {
         className="max-w-xs break-words text-sm px-3 py-2"
         style={{ whiteSpace: "normal" }}
       />
+
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-sm px-4 py-2 rounded shadow-lg z-50">
+          Registration successful! Please check your email to complete the
+          process.
+        </div>
+      )}
     </div>
   );
 }
