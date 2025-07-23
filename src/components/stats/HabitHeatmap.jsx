@@ -11,7 +11,6 @@ function transformHabitsToHeatmap(habits) {
   const dateMap = {};
   const today = new Date();
 
-  // Loop over the last 120 days
   for (let i = 0; i <= 120; i++) {
     const date = subDays(today, i);
     const iso = formatISO(date, { representation: "date" });
@@ -19,14 +18,26 @@ function transformHabitsToHeatmap(habits) {
   }
 
   habits.forEach((habit) => {
-    const { history = {}, activeDays = [0, 1, 2, 3, 4, 5, 6] } = habit;
+    const {
+      history = {},
+      activeDays = [0, 1, 2, 3, 4, 5, 6],
+      createdAt,
+    } = habit;
+    const createdDate = new Date(createdAt);
 
     Object.keys(dateMap).forEach((isoDate) => {
-      const dayIndex = new Date(isoDate + "T00:00:00").getDay();
+      const date = new Date(isoDate + "T00:00:00");
+      const dayIndex = date.getDay();
       const isActive = activeDays.includes(dayIndex);
-      if (!isActive) return;
-
+      const hasBackfilled = history[isoDate] !== undefined;
+    
+      const isEligible =
+        (createdDate <= date && isActive) || hasBackfilled;
+    
+      if (!isEligible) return;
+    
       dateMap[isoDate].total += 1;
+    
       if (history[isoDate] === true) {
         dateMap[isoDate].completed += 1;
       }

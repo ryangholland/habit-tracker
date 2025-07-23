@@ -73,6 +73,7 @@ export function HabitProvider({ children }) {
           id,
           name,
           active_days,
+          created_at,
           habit_history (
             date,
             completed
@@ -97,6 +98,7 @@ export function HabitProvider({ children }) {
           id: habit.id,
           name: habit.name,
           activeDays: habit.active_days,
+          createdAt: habit.created_at,
           history,
           completedToday:
             history[new Date().toISOString().slice(0, 10)] || false,
