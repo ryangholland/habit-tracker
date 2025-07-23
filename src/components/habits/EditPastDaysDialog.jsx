@@ -18,85 +18,58 @@ export default function EditPastDaysDialog({ isOpen, onClose }) {
     const wasCompleted = habit.history?.[isoDate] === true;
     const newValue = !wasCompleted;
 
-    // GUEST MODE LOGIC
+    // Optimistic local update (both guest and Supabase)
+    const updated = habits.map((h) =>
+      h.id === habitId
+        ? {
+            ...h,
+            history: {
+              ...h.history,
+              [isoDate]: newValue,
+            },
+            completedToday:
+              isoDate === new Date().toISOString().slice(0, 10)
+                ? newValue
+                : h.completedToday,
+          }
+        : h
+    );
+    setHabits(updated);
+
     if (isGuest) {
-      const updated = habits.map((h) =>
-        h.id === habitId
-          ? {
-              ...h,
-              history: {
-                ...h.history,
-                [isoDate]: newValue,
-              },
-              completedToday:
-                isoDate === new Date().toISOString().slice(0, 10)
-                  ? newValue
-                  : h.completedToday,
-            }
-          : h
-      );
-      setHabits(updated);
       localStorage.setItem("guest_habits", JSON.stringify(updated));
       return;
     }
 
-    // NORMAL USER LOGIC
-    const { data: existing, error: fetchError } = await supabase
-      .from("habit_history")
-      .select("id")
-      .eq("habit_id", habitId)
-      .eq("date", isoDate)
-      .limit(1)
-      .maybeSingle();
-
-    if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Error checking history:", fetchError.message);
-      return;
-    }
-
-    if (existing) {
-      const { error: updateError } = await supabase
+    // Fire-and-forget Supabase request
+    try {
+      const { data: existing, error: fetchError } = await supabase
         .from("habit_history")
-        .update({ completed: newValue })
-        .eq("id", existing.id);
+        .select("id")
+        .eq("habit_id", habitId)
+        .eq("date", isoDate)
+        .maybeSingle();
 
-      if (updateError) {
-        console.error("Failed to update history:", updateError.message);
+      if (fetchError && fetchError.code !== "PGRST116") {
+        console.error("Error checking history:", fetchError.message);
         return;
       }
-    } else {
-      const { error: insertError } = await supabase
-        .from("habit_history")
-        .insert({
+
+      if (existing) {
+        await supabase
+          .from("habit_history")
+          .update({ completed: newValue })
+          .eq("id", existing.id);
+      } else {
+        await supabase.from("habit_history").insert({
           habit_id: habitId,
           date: isoDate,
           completed: newValue,
         });
-
-      if (insertError) {
-        console.error("Failed to insert history:", insertError.message);
-        return;
       }
+    } catch (err) {
+      console.error("Failed to update habit history:", err);
     }
-
-    // Update local state
-    setHabits((prev) =>
-      prev.map((h) =>
-        h.id === habitId
-          ? {
-              ...h,
-              history: {
-                ...h.history,
-                [isoDate]: newValue,
-              },
-              completedToday:
-                isoDate === new Date().toISOString().slice(0, 10)
-                  ? newValue
-                  : h.completedToday,
-            }
-          : h
-      )
-    );
   };
 
   return (
