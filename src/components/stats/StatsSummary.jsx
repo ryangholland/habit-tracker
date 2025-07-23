@@ -1,50 +1,60 @@
 import { useHabits } from "../../hooks/useHabits";
-import { parseISO, isEqual, subDays, formatISO } from "date-fns";
+import { parseISO, subDays, formatISO } from "date-fns";
 
-function calculateStreak(
+export function calculateStreak(
   history,
   activeDays = [0, 1, 2, 3, 4, 5, 6],
   upToDate = new Date()
 ) {
   const todayISO = formatISO(upToDate, { representation: "date" });
 
-  // Only include dates in the past or today
-  const filteredDates = Object.keys(history)
-    .filter((dateStr) => {
-      const dayIndex = new Date(dateStr + "T00:00:00").getDay();
-      return (
-        activeDays.includes(dayIndex) &&
-        dateStr <= todayISO && // include today only if it’s completed
-        history[dateStr] === true // only count completed days
-      );
-    })
-    .sort();
-
+  // ========== Longest Streak ==========
   let longest = 0;
   let current = 0;
-  let prev = null;
+  let checkDate = subDays(upToDate, 1); // start from yesterday
+  let daysChecked = 0;
+  const maxDaysToCheck = 365;
 
-  filteredDates.forEach((dateStr) => {
-    const date = parseISO(dateStr);
+  while (daysChecked < maxDaysToCheck) {
+    const iso = formatISO(checkDate, { representation: "date" });
+    const dayIndex = checkDate.getDay();
 
-    if (prev && isEqual(date, subDays(prev, -1))) {
-      current += 1;
-    } else {
-      current = 1;
+    if (!activeDays.includes(dayIndex)) {
+      checkDate = subDays(checkDate, 1);
+      daysChecked += 1;
+      continue;
     }
 
-    if (current > longest) longest = current;
-    prev = date;
-  });
+    if (history[iso] === true) {
+      current += 1;
+      if (current > longest) longest = current;
+    } else {
+      current = 0;
+    }
 
-  // For active streak, use yesterday logic as before
-  const yesterday = subDays(upToDate, 1);
-  const yesterdayISO = formatISO(yesterday, { representation: "date" });
-  const yesterdayDayIndex = yesterday.getDay();
-  const isYesterdayActive = activeDays.includes(yesterdayDayIndex);
+    checkDate = subDays(checkDate, 1);
+    daysChecked += 1;
+  }
 
-  const active =
-    isYesterdayActive && history[yesterdayISO] === true ? current : 0;
+  // ========== Active Streak ==========
+  let active = 0;
+  checkDate = subDays(upToDate, 1); // reset
+  while (true) {
+    const iso = formatISO(checkDate, { representation: "date" });
+    const dayIndex = checkDate.getDay();
+
+    if (!activeDays.includes(dayIndex)) {
+      checkDate = subDays(checkDate, 1);
+      continue;
+    }
+
+    if (history[iso] === true) {
+      active += 1;
+      checkDate = subDays(checkDate, 1);
+    } else {
+      break;
+    }
+  }
 
   return { longest, active };
 }
