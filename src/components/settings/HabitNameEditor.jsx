@@ -12,20 +12,19 @@ function HabitNameEditor({ habit, isGuest, onRename }) {
       return;
     }
 
-    if (!isGuest) {
-      const { error } = await supabase
-        .from("habits")
-        .update({ name: newName })
-        .eq("id", habit.id);
-
-      if (error) {
-        console.error("Failed to update name:", error.message);
-        return;
-      }
-    }
-
     onRename(habit.id, newName);
     setEditing(false);
+
+    if (!isGuest) {
+      try {
+        await supabase
+          .from("habits")
+          .update({ name: newName })
+          .eq("id", habit.id);
+      } catch (err) {
+        console.error("Failed to update name:", err);
+      }
+    }
   };
 
   if (editing) {

@@ -111,21 +111,21 @@ export function HabitProvider({ children }) {
   }, [user, isGuest, isoDate]);
 
   const deleteHabit = async (id) => {
+    // Optimistic local update
+    const updated = habits.filter((h) => h.id !== id);
+    setHabits(updated);
+
     if (isGuest) {
-      const updated = habits.filter((h) => h.id !== id);
-      setHabits(updated);
       localStorage.setItem("guest_habits", JSON.stringify(updated));
       return;
     }
 
-    const { error } = await supabase.from("habits").delete().eq("id", id);
-
-    if (error) {
-      console.error("Failed to delete habit:", error.message);
-      return;
+    // Fire-and-forget Supabase delete
+    try {
+      await supabase.from("habits").delete().eq("id", id);
+    } catch (err) {
+      console.error("Failed to delete habit from Supabase:", err);
     }
-
-    setHabits((prev) => prev.filter((h) => h.id !== id));
   };
 
   return (
