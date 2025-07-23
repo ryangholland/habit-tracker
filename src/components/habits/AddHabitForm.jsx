@@ -21,6 +21,7 @@ function AddHabitForm() {
       return;
     }
 
+    // GUEST MODE
     if (isGuest) {
       const newHabit = createNewHabit(name, isoDate);
       const updated = [...habits, newHabit];
@@ -32,46 +33,51 @@ function AddHabitForm() {
 
     if (!user) return;
 
-    // Supabase flow
-    const { data: habit, error: habitError } = await supabase
-      .from("habits")
-      .insert({
-        user_id: user.id,
-        name,
-        active_days: [0, 1, 2, 3, 4, 5, 6], // default to every day
-      })
-      .select()
-      .single();
+    // SUPABASE MODE — Optimistic UI first
+    const tempId = crypto.randomUUID();
+    const optimisticHabit = {
+      id: tempId,
+      name,
+      activeDays: [0, 1, 2, 3, 4, 5, 6],
+      history: { [isoDate]: false },
+      completedToday: false,
+    };
 
-    if (habitError) {
-      console.error("Error creating habit:", habitError.message);
-      return;
-    }
+    setHabits([...habits, optimisticHabit]);
+    setInputValue("");
+    setError("");
 
-    const { error: historyError } = await supabase
-      .from("habit_history")
-      .insert({
+    try {
+      const { data: habit, error: habitError } = await supabase
+        .from("habits")
+        .insert({
+          user_id: user.id,
+          name,
+          active_days: [0, 1, 2, 3, 4, 5, 6],
+        })
+        .select()
+        .single();
+
+      if (habitError) {
+        console.error("Error creating habit:", habitError.message);
+        return;
+      }
+
+      await supabase.from("habit_history").insert({
         habit_id: habit.id,
         date: isoDate,
         completed: false,
       });
 
-    if (historyError) {
-      console.error("Error creating history:", historyError.message);
-      return;
+      // Replace optimistic habit with real one
+      setHabits((prev) =>
+        prev.map((h) =>
+          h.id === tempId ? { ...h, id: habit.id } : h
+        )
+      );
+    } catch (err) {
+      console.error("Failed to create habit:", err);
     }
-
-    const newHabit = {
-      id: habit.id,
-      name: habit.name,
-      activeDays: habit.active_days,
-      history: { [isoDate]: false },
-      completedToday: false,
-    };
-
-    setHabits([...habits, newHabit]);
-    setError("");
-    setInputValue("");
   }
 
   function handleSubmit(e) {
