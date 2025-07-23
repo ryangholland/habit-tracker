@@ -24,9 +24,10 @@ function ActiveDaySelector({
   const checkboxChecked = isEveryDay(habit.activeDays);
   const isLocked = checkboxChecked;
 
-  const updateActiveDays = (id, newDays) => {
+  // Shared optimistic update helper
+  const updateLocalHabits = (newDays) => {
     const updated = habits.map((h) =>
-      h.id === id ? { ...h, activeDays: newDays } : h
+      h.id === habit.id ? { ...h, activeDays: newDays } : h
     );
     setHabits(updated);
     saveToLocalStorage(updated);
@@ -36,18 +37,17 @@ function ActiveDaySelector({
     const enable = !checkboxChecked;
     const newDays = enable ? [0, 1, 2, 3, 4, 5, 6] : [];
 
-    if (isGuest) {
-      updateActiveDays(habit.id, newDays);
-      return;
-    }
+    updateLocalHabits(newDays);
 
-    const { error } = await supabase
-      .from("habits")
-      .update({ active_days: newDays })
-      .eq("id", habit.id);
-
-    if (!error) {
-      updateActiveDays(habit.id, newDays);
+    if (!isGuest) {
+      try {
+        await supabase
+          .from("habits")
+          .update({ active_days: newDays })
+          .eq("id", habit.id);
+      } catch (err) {
+        console.error("Failed to update active days:", err);
+      }
     }
   };
 
@@ -57,18 +57,17 @@ function ActiveDaySelector({
       ? habit.activeDays.filter((d) => d !== dayIndex)
       : [...habit.activeDays, dayIndex];
 
-    if (isGuest) {
-      updateActiveDays(habit.id, newDays);
-      return;
-    }
+    updateLocalHabits(newDays);
 
-    const { error } = await supabase
-      .from("habits")
-      .update({ active_days: newDays })
-      .eq("id", habit.id);
-
-    if (!error) {
-      updateActiveDays(habit.id, newDays);
+    if (!isGuest) {
+      try {
+        await supabase
+          .from("habits")
+          .update({ active_days: newDays })
+          .eq("id", habit.id);
+      } catch (err) {
+        console.error("Failed to update active days:", err);
+      }
     }
   };
 
