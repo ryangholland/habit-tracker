@@ -8,7 +8,6 @@ import "react-tooltip/dist/react-tooltip.css";
 
 function Register() {
   const { register, setIsGuest } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,16 +18,12 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username.trim() || !email.trim() || !password.trim()) return;
+    if (!email.trim() || !password.trim()) return;
 
     setIsLoading(true);
     setErrorMessage("");
 
-    const result = await register(
-      username.trim(),
-      email.trim(),
-      password.trim()
-    );
+    const result = await register(email.trim(), password.trim());
 
     await new Promise((res) => setTimeout(res, 250));
     setIsLoading(false);
@@ -56,13 +51,7 @@ function Register() {
         <h1 className="text-2xl font-bold text-center text-black dark:text-white">
           Register
         </h1>
-        <input
-          type="text"
-          placeholder="Choose a username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
-        />
+
         <input
           type="email"
           placeholder="Enter your email"
@@ -77,11 +66,13 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
+
         {errorMessage && (
           <div className="text-red-600 text-sm font-medium text-center">
             {errorMessage}
           </div>
         )}
+
         <button
           type="submit"
           disabled={isLoading}
@@ -96,6 +87,7 @@ function Register() {
             "Register"
           )}
         </button>
+
         <button
           type="button"
           onClick={() => navigate("/login")}
@@ -130,13 +122,6 @@ function Register() {
         className="max-w-xs break-words text-sm px-3 py-2"
         style={{ whiteSpace: "normal" }}
       />
-
-      {showToast && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-sm px-4 py-2 rounded shadow-lg z-50">
-          Registration successful! Please check your email to complete the
-          process.
-        </div>
-      )}
     </div>
   );
 }

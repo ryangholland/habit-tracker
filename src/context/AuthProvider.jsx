@@ -1,184 +1,92 @@
-import { useEffect, useState } from "react";
-import { AuthContext } from "./AuthContext";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../supabaseClient";
+import { AuthContext } from "./AuthContext";
 
-export function AuthProvider({ children }) {
+export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
-
   const [isGuest, setIsGuest] = useState(() => {
-    return localStorage.getItem("isGuest") === "true";
+    try {
+      return JSON.parse(localStorage.getItem("isGuest") || "false");
+    } catch {
+      return false;
+    }
   });
 
+  // persist guest flag
   useEffect(() => {
-    if (user) {
-      setIsGuest(false);
-      localStorage.removeItem("isGuest");
-    } else {
-      localStorage.setItem("isGuest", isGuest);
-    }
-  }, [user, isGuest]);
+    localStorage.setItem("isGuest", JSON.stringify(isGuest));
+  }, [isGuest]);
 
-  // Shared function to hydrate user
-  async function handleSession(session) {
-    const baseUser = session?.user;
-
-    if (baseUser) {
-      try {
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("username")
-          .eq("id", baseUser.id)
-          .single();
-
-        if (error) {
-          console.error("Failed to fetch profile:", error.message);
-        }
-
-        setUser({
-          ...baseUser,
-          username: profile?.username || null,
-        });
-
-        setIsGuest(false);
-        localStorage.removeItem("isGuest");
-      } catch (err) {
-        console.error("Error handling session:", err);
-        setUser(null);
-      }
-    } else {
-      setUser(null);
-    }
-  }
-
+  // initialize + listen for auth changes
   useEffect(() => {
-    let initialLoad = true;
-    
-    // Load current session on mount
-    supabase.auth.getSession().then(({ data }) => {
-      handleSession(data?.session).finally(() => setAuthLoading(false));
+    let mounted = true;
+
+    const init = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!mounted) return;
+      setUser(data.session?.user ?? null);
+      if (data.session?.user) setIsGuest(false);
+    };
+    init();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) setIsGuest(false);
     });
 
-    // Listen for auth changes
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        handleSession(session);
-      }
-    );
-
     return () => {
-      listener?.subscription?.unsubscribe?.();
+      mounted = false;
+      subscription?.unsubscribe();
     };
   }, []);
 
-  const register = async (username, email, password) => {
+  // register with email + password
+  const register = useCallback(async (email, password) => {
     try {
-      const { data: signUpData, error: signUpError } =
-        await supabase.auth.signUp({
-          email,
-          password,
-        });
-
-      if (signUpError) {
-        return { success: false, message: signUpError.message };
-      }
-
-      const userId = signUpData.user?.id;
-
-      if (userId) {
-        const { error: profileError } = await supabase.from("profiles").insert({
-          id: userId,
-          username,
-        });
-
-        if (profileError) {
-          if (profileError.code === "23505") {
-            return { success: false, message: "Username already taken." };
-          } else {
-            return { success: false, message: profileError.message };
-          }
-        }
-      }
-
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) return { success: false, message: error.message };
       return { success: true };
     } catch (err) {
-      console.error("Register failed:", err);
-      return { success: false, message: "Unexpected error. Please try again." };
+      return { success: false, message: err.message || "Unknown error" };
     }
-  };
+  }, []);
 
-  const login = async (username, password) => {
+  // login with email + password
+  const login = useCallback(async (email, password) => {
     try {
-      // Step 1: Find user by username
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username", username)
-        .single();
-
-      if (profileError) {
-        return { success: false, message: "Username not found." };
-      }
-
-      const userId = profile.id;
-
-      // Step 2: Get email tied to that user
-      const { data: userRow, error: userError } = await supabase
-        .from("users")
-        .select("email")
-        .eq("id", userId)
-        .single();
-
-      if (userError) {
-        return {
-          success: false,
-          message: "Something went wrong. Please try again later.",
-        };
-      }
-
-      const email = userRow.email;
-
-      // Step 3: Attempt sign-in with email + password
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      if (signInError) {
-        return { success: false, message: "Incorrect password." };
-      }
-
-      // Step 4: Success — clear guest mode
+      if (error) return { success: false, message: error.message };
+      setUser(data.user ?? null);
       setIsGuest(false);
-      localStorage.removeItem("isGuest");
-
       return { success: true };
     } catch (err) {
-      console.error("Login failed:", err);
-      return {
-        success: false,
-        message: "Unexpected error. Please try again.",
-      };
+      return { success: false, message: err.message || "Unknown error" };
     }
-  };
+  }, []);
 
-  const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setIsGuest(false);
-    localStorage.removeItem("isGuest");
-  };
+  const logout = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        login,
-        register,
-        logout,
         isGuest,
         setIsGuest,
-        authLoading,
+        register,
+        login,
+        logout,
       }}
     >
       {children}

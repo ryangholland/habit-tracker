@@ -1,14 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { FaSpinner } from "react-icons/fa";
-import { FaInfoCircle } from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
+import { FaSpinner, FaInfoCircle } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 function Login() {
   const { login, setIsGuest } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,15 +15,12 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!username.trim() || !password.trim()) return;
+    if (!email.trim() || !password.trim()) return;
 
     setIsLoading(true);
     setErrorMessage("");
 
-    const result = await login(username.trim(), password.trim());
-
-    await new Promise((res) => setTimeout(res, 250));
+    const result = await login(email.trim(), password.trim());
 
     setIsLoading(false);
 
@@ -40,34 +36,38 @@ function Login() {
       <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
         Daily Habit Tracker
       </h1>
+
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
       >
-        <h1 className="text-2xl font-bold text-center text-black dark:text-white">
-          Log In
-        </h1>
+        <h2 className="text-2xl font-bold text-center text-black dark:text-white">
+          Log in
+        </h2>
+
         <input
-          type="text"
-          disabled={isLoading}
-          placeholder="Enter your username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Enter your email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
         <input
           type="password"
-          disabled={isLoading}
           placeholder="Enter your password"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"
         />
+
         {errorMessage && (
           <div className="text-red-600 text-sm font-medium text-center">
             {errorMessage}
           </div>
         )}
+
         <button
           type="submit"
           disabled={isLoading}
@@ -79,16 +79,20 @@ function Login() {
               Logging in...
             </>
           ) : (
-            "Log In"
+            "Log in"
           )}
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/register")}
-          className="w-full text-sm text-center text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          Need an account? Register
-        </button>
+
+        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+          Don’t have an account?{" "}
+          <Link
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+            to="/register"
+          >
+            Register
+          </Link>
+        </div>
+
         <div className="flex items-center justify-center gap-2">
           <button
             type="button"

@@ -1,73 +1,67 @@
-import {
-  Popover,
-  PopoverPanel,
-  PopoverButton,
-  Transition,
-} from "@headlessui/react";
-import { FaUser } from "react-icons/fa";
-import { useContext, Fragment } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FiSettings, FiLogOut, FiUser } from "react-icons/fi";
 
 function Header() {
-  const { user, isGuest, logout } = useContext(AuthContext);
+  const { user, isGuest, logout, setIsGuest } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const displayName = isGuest
+    ? "Guest"
+    : user?.email?.split("@")[0] || "Account";
+
+  const handleLogout = async () => {
+    if (isGuest) {
+      setIsGuest(false);
+      navigate("/login");
+      return;
+    }
+    await logout();
     navigate("/login");
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 text-black dark:text-white border-b border-gray-300 dark:border-gray-700">
-      <div className="flex justify-between items-center p-4">
-        <h1 className="text-4xl">Daily Habit Tracker</h1>
-
-        <Popover className="relative">
-          <PopoverButton className="focus:outline-none cursor-pointer">
-            <FaUser className="text-xl md:text-2xl hover:text-blue-600 dark:hover:text-blue-400 transition" />
-          </PopoverButton>
-
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-200"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="transition ease-in duration-150"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
+    <header className="w-full sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur">
+      <div className="max-w-6xl mx-auto h-14 px-4 flex items-center justify-between">
+        {/* Left: app/brand */}
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="font-semibold text-gray-900 dark:text-white text-lg"
           >
-            <PopoverPanel className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
-              <div className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                  {isGuest ? (
-                    <div className="flex flex-col">
-                      <span>
-                        Hi, <span className="font-semibold">Guest</span>
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 italic">
-                        Guest Mode
-                      </span>
-                    </div>
-                  ) : (
-                    <span>
-                      Hi,{" "}
-                      <span className="font-semibold">{user?.username}</span>
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                >
-                  Log Out
-                </button>
-              </div>
-            </PopoverPanel>
-          </Transition>
-        </Popover>
+            Daily Habit Tracker
+          </Link>
+        </div>
+
+        {/* Right: settings + user menu */}
+        <div className="flex items-center gap-4">
+          <Link
+            to="/settings"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            aria-label="Settings"
+            title="Settings"
+          >
+            <FiSettings className="h-5 w-5" />
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <FiUser className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+            <span className="text-sm text-gray-700 dark:text-gray-200">
+              {displayName}
+            </span>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            aria-label={isGuest ? "Exit Guest Mode" : "Log out"}
+            title={isGuest ? "Exit Guest Mode" : "Log out"}
+          >
+            <FiLogOut className="h-5 w-5" />
+          </button>
+        </div>
       </div>
-      <hr />
     </header>
   );
 }
