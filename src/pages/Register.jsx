@@ -76,7 +76,7 @@ function Register() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+          className="w-full px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {isLoading ? (
             <>
@@ -87,14 +87,6 @@ function Register() {
             "Register"
           )}
         </button>
-
-        {/* <button
-          type="button"
-          onClick={() => navigate("/login")}
-          className="w-full text-sm text-center text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          Already have an account? Log in
-        </button> */}
 
         <div className="text-center text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
@@ -113,7 +105,7 @@ function Register() {
               setIsGuest(true);
               navigate("/");
             }}
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline cursor-pointer"
           >
             Continue as Guest
           </button>

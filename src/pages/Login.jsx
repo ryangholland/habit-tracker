@@ -71,7 +71,7 @@ function Login() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {isLoading ? (
             <>
@@ -100,7 +100,7 @@ function Login() {
               setIsGuest(true);
               navigate("/");
             }}
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:underline"
+            className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-black dark:hover:text-white hover:underline"
           >
             Continue as Guest
           </button>
