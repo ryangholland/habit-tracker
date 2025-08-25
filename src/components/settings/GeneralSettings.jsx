@@ -41,7 +41,7 @@ function GeneralSettings({ onClearHistoryClick, onDeleteAllClick }) {
             onChange={setDarkMode}
             className={`${
               darkMode ? "bg-blue-600" : "bg-gray-300"
-            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer`}
           >
             <span
               className={`${
@@ -61,7 +61,7 @@ function GeneralSettings({ onClearHistoryClick, onDeleteAllClick }) {
             onChange={setShowQuote}
             className={`${
               showQuote ? "bg-blue-600" : "bg-gray-300"
-            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer`}
           >
             <span
               className={`${

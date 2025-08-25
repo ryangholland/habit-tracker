@@ -54,7 +54,7 @@ function Header() {
 
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white cursor-pointer"
             aria-label={isGuest ? "Exit Guest Mode" : "Log out"}
             title={isGuest ? "Exit Guest Mode" : "Log out"}
           >
