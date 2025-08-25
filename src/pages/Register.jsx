@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 import { FaInfoCircle } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
@@ -88,13 +88,23 @@ function Register() {
           )}
         </button>
 
-        <button
+        {/* <button
           type="button"
           onClick={() => navigate("/login")}
           className="w-full text-sm text-center text-blue-600 dark:text-blue-400 hover:underline"
         >
           Already have an account? Log in
-        </button>
+        </button> */}
+
+        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+          Already have an account?{" "}
+          <Link
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+            to="/login"
+          >
+            Log in
+          </Link>
+        </div>
 
         <div className="flex items-center justify-center gap-2">
           <button
